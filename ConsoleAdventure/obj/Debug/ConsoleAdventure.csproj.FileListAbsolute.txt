@@ -1,0 +1,7 @@
+C:\Users\rafha\source\repos\ConsoleAdventure\ConsoleAdventure\bin\Debug\ConsoleAdventure.exe.config
+C:\Users\rafha\source\repos\ConsoleAdventure\ConsoleAdventure\bin\Debug\ConsoleAdventure.exe
+C:\Users\rafha\source\repos\ConsoleAdventure\ConsoleAdventure\bin\Debug\ConsoleAdventure.pdb
+C:\Users\rafha\source\repos\ConsoleAdventure\ConsoleAdventure\obj\Debug\ConsoleAdventure.csproj.AssemblyReference.cache
+C:\Users\rafha\source\repos\ConsoleAdventure\ConsoleAdventure\obj\Debug\ConsoleAdventure.csproj.CoreCompileInputs.cache
+C:\Users\rafha\source\repos\ConsoleAdventure\ConsoleAdventure\obj\Debug\ConsoleAdventure.exe
+C:\Users\rafha\source\repos\ConsoleAdventure\ConsoleAdventure\obj\Debug\ConsoleAdventure.pdb
