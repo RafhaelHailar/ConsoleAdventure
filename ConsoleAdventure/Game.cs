@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Data.Common;
 
 public class Game
 {
@@ -19,7 +20,11 @@ public class Game
         { "wine room", "center" },
     };
 
+    private string currentLocation = "center";
+
     public Game() {
+        Display display = new Display();
+
         createLocation();
 
         foreach (KeyValuePair<string, ArrayList> location in locations)
@@ -35,6 +40,8 @@ public class Game
 
             Console.WriteLine("");
         }
+
+        display.displayText("intro");
     }
 
     protected void constructPath(string from, string to)
