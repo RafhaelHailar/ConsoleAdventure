@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
-using System.Data.Common;
 
 public class Game
 {
@@ -19,15 +18,22 @@ public class Game
         { "family history room", "wine room" },
         { "wine room", "center" },
     };
+    public enum ChoicesKeys
+    {
+        CHANGEPLACE
+    }
 
     private string currentLocation = "center";
 
     private string userInput = "";
 
-    private Display display = new Display();
+    private readonly Display display = new Display();
+    private readonly Input input;
 
     public Game() {
-        createLocation();
+        CreateLocation();
+
+        input = new Input(display);
 
         foreach (KeyValuePair<string, ArrayList> location in locations)
         {
@@ -43,29 +49,10 @@ public class Game
             Console.WriteLine("");
         }
 
-        display.displayText(Display.DisplayTextsKeys.INTRO);
-
-        askForInput();
+        input.askForInput();
     }
 
-    protected void askForInput()
-    {
-        ConsoleKeyInfo name = Console.ReadKey();
-
-        if (name.Key != ConsoleKey.Enter)
-        {
-            Console.Clear();
-            display.reDisplayText();
-        }
-        else
-        {
-            display.endDisplayText();
-        }
-
-        askForInput();
-    }
-
-    protected void constructPath(string from, string to)
+    protected void ConstructPath(string from, string to)
     { 
         bool pathExists = locations.ContainsKey(from);
 
@@ -76,20 +63,36 @@ public class Game
             paths.Add(to);
         } else
         {
-            ArrayList initialPaths = new ArrayList();
-            initialPaths.Add(to);
+            ArrayList initialPaths = new ArrayList()
+            {
+                to
+            };
             locations.Add(from, initialPaths);
         }
     }
 
-    protected void createLocation()
+    protected void CreateLocation()
     {
         for (int i = 0; i < directions.GetLength(0); i++)
         {
             string from = directions[i, 0];
             string to = directions[i, 1];
 
-            constructPath(from, to);
+            ConstructPath(from, to);
         }
     }
+
+
+    private Dictionary<ChoicesKeys, string[]> Choices = new Dictionary<ChoicesKeys, string[]>
+    {
+        {
+           ChoicesKeys.CHANGEPLACE,
+           new string[]
+           {
+             "********************",
+             "********************",
+             "********************",
+           }
+        }
+    };
 }
