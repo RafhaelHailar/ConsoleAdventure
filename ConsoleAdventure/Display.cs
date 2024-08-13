@@ -6,19 +6,29 @@ using System.Timers;
 
 public class Display
 {
-    private static System.Timers.Timer aTimer;
+    private static System.Timers.Timer aTimer = new System.Timers.Timer();
     private int pointer = 0;
     private int counter = 0;
     private string currentText = "";
-   
-    public Display()
+    private string previousText = null;
+
+    public enum DisplayTextsKeys
     {
-   
+        INTRO = 0,
+        INTHECENTER
     }
 
-    public void displayText(string target)
+    public Display()
     {
+       
+    }
+
+    public void displayText(DisplayTextsKeys target)
+    {
+        aTimer.Dispose();
+        aTimer.Stop();
         currentText = DisplayTexts[target];
+        previousText = currentText;
         animateText();
     }
 
@@ -34,23 +44,57 @@ public class Display
         counter++;
         if (pointer == currentText.Length)
         {
-            aTimer.Stop();
-            aTimer.Dispose();
-            pointer = 0;
-            counter = 0;
-            currentText = "";
+            stopTimer();
+            resetDisplayText();
             return;
         }
 
+        Console.Clear();
+
         char symbol = currentText[pointer];
-        Console.Write(symbol);
+
+        Console.WriteLine(currentText.Substring(0, pointer) + symbol);
         pointer++;
     }
 
-    static Dictionary<string, string> DisplayTexts = new Dictionary<string, string>
+    private void stopTimer()
+    {
+        aTimer.Stop();
+        aTimer.Dispose();
+    }
+
+    private void resetDisplayText()
+    {
+        pointer = 0;
+        counter = 0;
+        currentText = "";
+    }
+
+    public void reDisplayText()
+    {
+        Console.WriteLine(previousText);
+    }
+
+    public bool isDisplaying()
+    {
+        return currentText != null && currentText != "";
+    }
+
+    public void endDisplayText()
+    {
+        if (!isDisplaying()) return;
+
+        stopTimer();
+        Console.WriteLine(currentText);
+    }
+
+    static Dictionary<DisplayTextsKeys, string> DisplayTexts = new Dictionary<DisplayTextsKeys, string>
     {
         {
-            "intro","Welcome, to the game of console"
-        }
+            DisplayTextsKeys.INTRO,"Welcome, to the game of console"
+        },
+        {
+            DisplayTextsKeys.INTHECENTER,"Welcome, to the game of console"
+        },
     };
 }
