@@ -22,9 +22,11 @@ public class Game
 
     private string currentLocation = "center";
 
-    public Game() {
-        Display display = new Display();
+    private string userInput = "";
 
+    private Display display = new Display();
+
+    public Game() {
         createLocation();
 
         foreach (KeyValuePair<string, ArrayList> location in locations)
@@ -41,7 +43,26 @@ public class Game
             Console.WriteLine("");
         }
 
-        display.displayText("intro");
+        display.displayText(Display.DisplayTextsKeys.INTRO);
+
+        askForInput();
+    }
+
+    protected void askForInput()
+    {
+        ConsoleKeyInfo name = Console.ReadKey();
+
+        if (name.Key != ConsoleKey.Enter)
+        {
+            Console.Clear();
+            display.reDisplayText();
+        }
+        else
+        {
+            display.endDisplayText();
+        }
+
+        askForInput();
     }
 
     protected void constructPath(string from, string to)
