@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
-using System.Data.Common;
 
 public class Game
 {
@@ -19,13 +18,22 @@ public class Game
         { "family history room", "wine room" },
         { "wine room", "center" },
     };
+    public enum ChoicesKeys
+    {
+        CHANGEPLACE
+    }
 
     private string currentLocation = "center";
 
-    public Game() {
-        Display display = new Display();
+    private string userInput = "";
 
-        createLocation();
+    private readonly Display display = new Display();
+    private readonly Input input;
+
+    public Game() {
+        CreateLocation();
+
+        input = new Input(display);
 
         foreach (KeyValuePair<string, ArrayList> location in locations)
         {
@@ -41,10 +49,10 @@ public class Game
             Console.WriteLine("");
         }
 
-        display.displayText("intro");
+        input.askForInput();
     }
 
-    protected void constructPath(string from, string to)
+    protected void ConstructPath(string from, string to)
     { 
         bool pathExists = locations.ContainsKey(from);
 
@@ -55,20 +63,36 @@ public class Game
             paths.Add(to);
         } else
         {
-            ArrayList initialPaths = new ArrayList();
-            initialPaths.Add(to);
+            ArrayList initialPaths = new ArrayList()
+            {
+                to
+            };
             locations.Add(from, initialPaths);
         }
     }
 
-    protected void createLocation()
+    protected void CreateLocation()
     {
         for (int i = 0; i < directions.GetLength(0); i++)
         {
             string from = directions[i, 0];
             string to = directions[i, 1];
 
-            constructPath(from, to);
+            ConstructPath(from, to);
         }
     }
+
+
+    private Dictionary<ChoicesKeys, string[]> Choices = new Dictionary<ChoicesKeys, string[]>
+    {
+        {
+           ChoicesKeys.CHANGEPLACE,
+           new string[]
+           {
+             "********************",
+             "********************",
+             "********************",
+           }
+        }
+    };
 }
