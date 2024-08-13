@@ -14,38 +14,38 @@ public class Display
 
     public enum DisplayTextsKeys
     {
-        INTRO = 0,
+        INTRO,
         INTHECENTER
     }
 
     public Display()
     {
-       
+
     }
 
-    public void displayText(DisplayTextsKeys target)
+    public void DisplayText(DisplayTextsKeys target)
     {
         aTimer.Dispose();
         aTimer.Stop();
         currentText = DisplayTexts[target];
         previousText = currentText;
-        animateText();
+        AnimateText();
     }
 
-    private void animateText()
+    private void AnimateText()
     {
         aTimer = new System.Timers.Timer(70);
-        aTimer.Elapsed += showTimeText;
+        aTimer.Elapsed += ShowTimeText;
         aTimer.Enabled = true;
     }
 
-    private void showTimeText(Object source, ElapsedEventArgs e)
+    private void ShowTimeText(Object source, ElapsedEventArgs e)
     {
         counter++;
         if (pointer == currentText.Length)
         {
-            stopTimer();
-            resetDisplayText();
+            StopTimer();
+            ResetDisplayText();
             return;
         }
 
@@ -57,35 +57,45 @@ public class Display
         pointer++;
     }
 
-    private void stopTimer()
+    private void StopTimer()
     {
         aTimer.Stop();
         aTimer.Dispose();
     }
 
-    private void resetDisplayText()
+    private void ResetDisplayText()
     {
         pointer = 0;
         counter = 0;
         currentText = "";
     }
 
-    public void reDisplayText()
+    public void ReDisplayText()
     {
         Console.WriteLine(previousText);
     }
 
-    public bool isDisplaying()
+    public bool IsDisplaying()
     {
         return currentText != null && currentText != "";
     }
 
-    public void endDisplayText()
+    public void EndDisplayText()
     {
-        if (!isDisplaying()) return;
+        if (!IsDisplaying()) return;
 
-        stopTimer();
+        StopTimer();
         Console.WriteLine(currentText);
+    }
+
+    public void displayChoices()
+    {
+        //for (int i = 0; i < choose.Length; i++)
+        //{
+        //    string line = choose[i];
+        //    char value = chooseLevel == i ? '*' : ' ';
+        //    Console.WriteLine("[{0}] {1}", value, line);
+        //}
     }
 
     static Dictionary<DisplayTextsKeys, string> DisplayTexts = new Dictionary<DisplayTextsKeys, string>
