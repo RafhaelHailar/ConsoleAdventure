@@ -88,14 +88,14 @@ public class Display
         Console.WriteLine(currentText);
     }
 
-    public void displayChoices()
+    public void displayChoices(string[] choose, int chooseLevel)
     {
-        //for (int i = 0; i < choose.Length; i++)
-        //{
-        //    string line = choose[i];
-        //    char value = chooseLevel == i ? '*' : ' ';
-        //    Console.WriteLine("[{0}] {1}", value, line);
-        //}
+        for (int i = 0; i < choose.Length; i++)
+        {
+            string line = choose[i];
+            char value = chooseLevel == i ? '*' : ' ';
+            Console.WriteLine("[{0}] {1}", value, line);
+        }
     }
 
     static Dictionary<DisplayTextsKeys, string> DisplayTexts = new Dictionary<DisplayTextsKeys, string>
