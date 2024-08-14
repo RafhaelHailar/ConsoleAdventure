@@ -16,7 +16,7 @@ public class Input
     public Input(Display display) {
         this.display = display;
 
-        display.DisplayText(Display.DisplayTextsKeys.INTRO);
+        //display.DisplayText(Display.DisplayTextsKeys.INTRO);
     } 
 
     public void askForInput()
@@ -37,17 +37,18 @@ public class Input
         if (name.Key == ConsoleKey.UpArrow) MoveChoice(-1);
         if (name.Key == ConsoleKey.DownArrow) MoveChoice(1);
 
-        display.displayChoices();
+        display.displayChoices(Game.getCurrentChoices(), chooseLevel);
         askForInput();
     }
 
     protected void MoveChoice(int i)
     {
-        //int newChooseLevel = i + chooseLevel;
+        int newChooseLevel = i + chooseLevel;
+        string[] choose = Game.getCurrentChoices();
 
-        //if (newChooseLevel < 0) newChooseLevel = 0;
-        //if (newChooseLevel >= choose.Length) newChooseLevel = choose.Length - 1;
+        if (newChooseLevel < 0) newChooseLevel = 0;
+        if (newChooseLevel >= choose.Length) newChooseLevel = choose.Length - 1;
 
-        //chooseLevel = newChooseLevel;
+        chooseLevel = newChooseLevel;
     }
 }

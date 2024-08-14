@@ -4,9 +4,9 @@ using System.Collections;
 
 public class Game
 {
-    protected Dictionary<string, ArrayList> locations = new Dictionary<string, ArrayList>();
+    protected static Dictionary<string, ArrayList> locations = new Dictionary<string, ArrayList>();
 
-    protected string[,] directions =
+    protected static string[,] directions =
     {
         { "center", "spacious living room" },
         { "center", "wine room" },
@@ -23,7 +23,9 @@ public class Game
         CHANGEPLACE
     }
 
-    private string currentLocation = "center";
+    static private ChoicesKeys currentChoices = ChoicesKeys.CHANGEPLACE;
+
+    protected static string currentLocation = "center";
 
     private string userInput = "";
 
@@ -41,9 +43,9 @@ public class Game
             Console.Write("{0} -> ",
                       location.Key);
 
-            for ( int i = 0; i < paths.Count; i++ )
+            for (int i = 0; i < paths.Count; i++)
             {
-                Console.Write("{0}, ",paths[i]);
+                Console.Write("{0}, ", paths[i]);
             }
 
             Console.WriteLine("");
@@ -52,7 +54,7 @@ public class Game
         input.askForInput();
     }
 
-    protected void ConstructPath(string from, string to)
+    protected static void ConstructPath(string from, string to)
     { 
         bool pathExists = locations.ContainsKey(from);
 
@@ -71,7 +73,7 @@ public class Game
         }
     }
 
-    protected void CreateLocation()
+    protected static void CreateLocation()
     {
         for (int i = 0; i < directions.GetLength(0); i++)
         {
@@ -82,17 +84,32 @@ public class Game
         }
     }
 
+    protected static string[] getDirections(string location)
+    {
+        return (string[]) locations[location].ToArray(typeof(string));
+    }
 
-    private Dictionary<ChoicesKeys, string[]> Choices = new Dictionary<ChoicesKeys, string[]>
+
+    public static Dictionary<ChoicesKeys, string[]> Choices = new Dictionary<ChoicesKeys, string[]>
     {
         {
            ChoicesKeys.CHANGEPLACE,
-           new string[]
-           {
-             "********************",
-             "********************",
-             "********************",
-           }
+           new string[]{}
         }
     };
+
+    public static string[] getCurrentChoices()
+    {
+        switch (currentChoices)
+        {
+            case ChoicesKeys.CHANGEPLACE:
+                return getDirections(currentLocation);
+        }
+        return Choices[currentChoices];
+    }
+
+    public static void setCurrentChoices(ChoicesKeys choicesKeys)
+    {
+        currentChoices = choicesKeys;
+    }
 }
