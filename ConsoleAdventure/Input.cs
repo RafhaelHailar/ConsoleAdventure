@@ -22,22 +22,30 @@ public class Input
     public void askForInput()
     {
         ConsoleKeyInfo name = Console.ReadKey();
-
+        
         Console.Clear();
-        if (name.Key != ConsoleKey.Enter || !display.IsDisplaying())
+
+        switch (userState)
         {
-            display.ReDisplayText();
-            Console.WriteLine(name.Key);
-        }
-        else
-        {
-            display.EndDisplayText();
+            case UserState.MONOLOGUES:
+                if (name.Key != ConsoleKey.Enter || !display.IsDisplaying())
+                {
+                    display.ReDisplayText();
+                    Console.WriteLine(name.Key);
+                }
+                else
+                {
+                    display.EndDisplayText();
+                }
+                break;
+            case UserState.CHOOSING:
+                if (name.Key == ConsoleKey.UpArrow) MoveChoice(-1);
+                if (name.Key == ConsoleKey.DownArrow) MoveChoice(1);
+
+                display.displayChoices(Game.getCurrentChoices(), chooseLevel);
+                break;
         }
 
-        if (name.Key == ConsoleKey.UpArrow) MoveChoice(-1);
-        if (name.Key == ConsoleKey.DownArrow) MoveChoice(1);
-
-        display.displayChoices(Game.getCurrentChoices(), chooseLevel);
         askForInput();
     }
 
