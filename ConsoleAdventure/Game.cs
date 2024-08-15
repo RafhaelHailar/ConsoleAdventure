@@ -117,4 +117,26 @@ public class Game
     {
         currentChoices = choicesKeys;
     }
+
+    public static void MakeChoice(string choice)
+    {
+        if (choice == null) throw new ArgumentNullException();
+
+        string[] choices = getCurrentChoices();
+
+        bool exists = false;
+
+        for (int i = 0; i < choices.Length; i++)
+        {
+            if (choices[i].Equals(choice))
+            {
+                exists = true;
+            }
+
+        }
+
+        if (!exists) throw new Exception("choice given is not part of choices!");
+
+        Console.WriteLine("You choosed: {0}",choice);
+    }
 }
