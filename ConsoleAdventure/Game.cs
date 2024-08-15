@@ -142,6 +142,11 @@ public class Game
 
         if (!exists) throw new Exception("choice given is not part of choices!");
 
- 
+        switch ( currentChoices )
+        {
+            case ChoicesKeys.CHANGEPLACE:
+                SetCurrentLocation(choice);
+                break;
+        }
     }
 }
