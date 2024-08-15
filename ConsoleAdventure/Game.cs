@@ -98,6 +98,11 @@ public class Game
         }
     };
 
+    public static string GetCurrentLocation()
+    {
+        return currentLocation;
+    }
+
     public static string[] getCurrentChoices()
     {
         switch (currentChoices)
