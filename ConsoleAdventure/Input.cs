@@ -8,7 +8,7 @@ public class Input
         CHOOSING
     }
 
-    private UserState userState = UserState.MONOLOGUES;
+    private UserState userState = UserState.CHOOSING;
 
     Display display;
 
@@ -39,8 +39,21 @@ public class Input
                 }
                 break;
             case UserState.CHOOSING:
-                if (name.Key == ConsoleKey.UpArrow) MoveChoice(-1);
-                if (name.Key == ConsoleKey.DownArrow) MoveChoice(1);
+                Console.WriteLine("You are at {0} goto: \n", Game.GetCurrentLocation());
+                 
+                switch (name.Key)
+                {
+                    case ConsoleKey.Enter:
+                        string[] choose = Game.getCurrentChoices();
+                        Game.MakeChoice(choose[chooseLevel]);
+                        break;
+                    case ConsoleKey.UpArrow:
+                        MoveChoice(-1);
+                        break;
+                    case ConsoleKey.DownArrow:
+                        MoveChoice(1);
+                        break;
+                }
 
                 display.displayChoices(Game.getCurrentChoices(), chooseLevel);
                 break;
