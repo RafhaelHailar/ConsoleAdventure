@@ -16,7 +16,7 @@ public class Input
     public Input(Display display) {
         this.display = display;
 
-        //display.DisplayText(Display.DisplayTextsKeys.INTRO);
+    //    display.DisplayText(Display.DisplayTextsKeys.INTRO);
     } 
 
     public void askForInput()
@@ -28,6 +28,11 @@ public class Input
         switch (userState)
         {
             case UserState.MONOLOGUES:
+                if (name.Key == ConsoleKey.Enter && !display.IsDisplaying())
+                {
+                    Console.WriteLine("Ended");
+                }
+
                 if (name.Key != ConsoleKey.Enter || !display.IsDisplaying())
                 {
                     display.ReDisplayText();
@@ -39,13 +44,15 @@ public class Input
                 }
                 break;
             case UserState.CHOOSING:
-                Console.WriteLine("You are at {0} goto: \n", Game.GetCurrentLocation());
+                Console.WriteLine("You are at {0} goto: (press \\Enter or \\Space to choose) \n", Game.GetCurrentLocation());
                  
                 switch (name.Key)
                 {
                     case ConsoleKey.Enter:
+                    case ConsoleKey.Spacebar:
                         string[] choose = Game.getCurrentChoices();
                         Game.MakeChoice(choose[chooseLevel]);
+                        chooseLevel = 0;
                         break;
                     case ConsoleKey.UpArrow:
                         MoveChoice(-1);

@@ -103,6 +103,11 @@ public class Game
         return currentLocation;
     }
 
+    public static void SetCurrentLocation(string location)
+    {
+        currentLocation = location;
+    }
+
     public static string[] getCurrentChoices()
     {
         switch (currentChoices)
@@ -137,6 +142,11 @@ public class Game
 
         if (!exists) throw new Exception("choice given is not part of choices!");
 
-        Console.WriteLine("You choosed: {0}",choice);
+        switch ( currentChoices )
+        {
+            case ChoicesKeys.CHANGEPLACE:
+                SetCurrentLocation(choice);
+                break;
+        }
     }
 }
