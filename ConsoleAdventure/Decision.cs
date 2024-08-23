@@ -31,5 +31,15 @@ public class Decision
             branches.Add(name, node);
             choices.Add(name);
         }
+
+        public string[] GetChoices()
+        {
+            return (string[]) choices.ToArray(typeof(string));
+        }
+
+        public DecisionNode GetChoice(string name)
+        {
+            return branches[name];
+        }
     }
 }
