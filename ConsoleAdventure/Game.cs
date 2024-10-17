@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Data.Common;
 
 public class Game
 {
@@ -23,35 +24,38 @@ public class Game
         CHANGEPLACE
     }
 
+    // user input
     static private ChoicesKeys currentChoices = ChoicesKeys.CHANGEPLACE;
-
-    protected static string currentLocation = "center";
-
     private string userInput = "";
 
-    private readonly Display display = new Display();
+    // game state
+    protected static string currentLocation = "center";
+    protected static ArrayList locationStack = new ArrayList() { currentLocation };
     private readonly Input input;
+
+    // components initialization
+    private static readonly Display display = new Display();
+    static DecisionTree decisionTree = new DecisionTree();
 
     public Game() {
         CreateLocation();
 
-        input = new Input(display);
+        input = new Input(display, decisionTree);
 
-        foreach (KeyValuePair<string, ArrayList> location in locations)
-        {
-            ArrayList paths = location.Value;
-            Console.Write("{0} -> ",
-                      location.Key);
+        //foreach (KeyValuePair<string, ArrayList> location in locations)
+        //{
+        //    ArrayList paths = location.Value;
+        //    Console.Write("{0} -> ",
+        //              location.Key);
 
-            for (int i = 0; i < paths.Count; i++)
-            {
-                Console.Write("{0}, ", paths[i]);
-            }
+        //    for (int i = 0; i < paths.Count; i++)
+        //    {
+        //        Console.Write("{0}, ", paths[i]);
+        //    }
 
-            Console.WriteLine("");
-        }
-
-        input.askForInput();
+        //    Console.WriteLine("");
+        //}
+        input.AskForInput();
     }
 
     protected static void ConstructPath(string from, string to)
@@ -84,7 +88,7 @@ public class Game
         }
     }
 
-    protected static string[] getDirections(string location)
+    protected static string[] GetDirections(string location)
     {
         return (string[]) locations[location].ToArray(typeof(string));
     }
@@ -106,19 +110,20 @@ public class Game
     public static void SetCurrentLocation(string location)
     {
         currentLocation = location;
+        locationStack.Add(location);
     }
 
-    public static string[] getCurrentChoices()
+    public static string[] GetCurrentChoices()
     {
         switch (currentChoices)
         {
             case ChoicesKeys.CHANGEPLACE:
-                return getDirections(currentLocation);
+                return GetDirections(currentLocation);
         }
         return Choices[currentChoices];
     }
 
-    public static void setCurrentChoices(ChoicesKeys choicesKeys)
+    public static void SetCurrentChoices(ChoicesKeys choicesKeys)
     {
         currentChoices = choicesKeys;
     }
@@ -127,7 +132,7 @@ public class Game
     {
         if (choice == null) throw new ArgumentNullException();
 
-        string[] choices = getCurrentChoices();
+        string[] choices = GetCurrentChoices();
 
         bool exists = false;
 
@@ -148,5 +153,15 @@ public class Game
                 SetCurrentLocation(choice);
                 break;
         }
+    }
+
+    // Retrieve Game States
+    public static Dictionary<string, object> GetState()
+    {
+        return new Dictionary<string, object>
+        {
+            { "currentLocation", currentLocation },
+            { "locationStack", locationStack }
+        };
     }
 }

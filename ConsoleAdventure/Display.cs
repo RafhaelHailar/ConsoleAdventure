@@ -88,7 +88,7 @@ public class Display
         Console.WriteLine(currentText);
     }
 
-    public void displayChoices(string[] choose, int chooseLevel)
+    public void DisplayChoices(string[] choose, int chooseLevel)
     {
         for (int i = 0; i < choose.Length; i++)
         {
@@ -98,13 +98,13 @@ public class Display
         }
     }
 
-    static Dictionary<DisplayTextsKeys, string> DisplayTexts = new Dictionary<DisplayTextsKeys, string>
+    static readonly Dictionary<DisplayTextsKeys, string> DisplayTexts = new Dictionary<DisplayTextsKeys, string>
     {
         {
             DisplayTextsKeys.INTRO,"Welcome, to the game of console"
         },
         {
-            DisplayTextsKeys.INTHECENTER,"Welcome, to the game of console"
+            DisplayTextsKeys.INTHECENTER,"You are now in the center of the mansion!"
         },
     };
 }
