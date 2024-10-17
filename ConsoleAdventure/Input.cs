@@ -68,9 +68,9 @@ public class Input
                 display.DisplayChoices(Game.GetCurrentChoices(), chooseLevel);
                 break;
         }
-        Console.WriteLine("\n\n\n\n\n\n{0}", decisionTree.GetCurrentDecision());
+        //Console.WriteLine("\n\n\n\n\n\n{0}", decisionTree.GetCurrentDecision());
         decisionTree.Update(Game.GetState());
-        Console.WriteLine("\n\n\n\n\n\n{0}", decisionTree.GetCurrentDecision());
+        //Console.WriteLine("\n\n\n\n\n\n{0}", decisionTree.GetCurrentDecision());
         AskForInput();
     }
 
