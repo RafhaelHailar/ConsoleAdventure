@@ -56,7 +56,7 @@ public class DecisionTree
             {
                 UpdateCurrentDecision(choice);
             }
-            Console.WriteLine("choice: {0}: {1} ", choices[i], isMatch);
+            //Console.WriteLine("choice: {0}: {1} ", choices[i], isMatch);
         }
     }
 
