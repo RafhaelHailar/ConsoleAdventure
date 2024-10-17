@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 public class Input
 {
@@ -11,15 +12,17 @@ public class Input
     private UserState userState = UserState.CHOOSING;
 
     Display display;
+    DecisionTree decisionTree;
 
     private int chooseLevel = 0;
-    public Input(Display display) {
+    public Input(Display display, DecisionTree decisionTree) {
         this.display = display;
+        this.decisionTree = decisionTree;
 
     //    display.DisplayText(Display.DisplayTextsKeys.INTRO);
     } 
 
-    public void askForInput()
+    public void AskForInput()
     {
         ConsoleKeyInfo name = Console.ReadKey();
         
@@ -50,7 +53,7 @@ public class Input
                 {
                     case ConsoleKey.Enter:
                     case ConsoleKey.Spacebar:
-                        string[] choose = Game.getCurrentChoices();
+                        string[] choose = Game.GetCurrentChoices();
                         Game.MakeChoice(choose[chooseLevel]);
                         chooseLevel = 0;
                         break;
@@ -62,17 +65,19 @@ public class Input
                         break;
                 }
 
-                display.displayChoices(Game.getCurrentChoices(), chooseLevel);
+                display.DisplayChoices(Game.GetCurrentChoices(), chooseLevel);
                 break;
         }
-
-        askForInput();
+        Console.WriteLine("\n\n\n\n\n\n{0}", decisionTree.GetCurrentDecision());
+        decisionTree.Update(Game.GetState());
+        Console.WriteLine("\n\n\n\n\n\n{0}", decisionTree.GetCurrentDecision());
+        AskForInput();
     }
 
     protected void MoveChoice(int i)
     {
         int newChooseLevel = i + chooseLevel;
-        string[] choose = Game.getCurrentChoices();
+        string[] choose = Game.GetCurrentChoices();
 
         if (newChooseLevel < 0) newChooseLevel = 0;
         if (newChooseLevel >= choose.Length) newChooseLevel = choose.Length - 1;
