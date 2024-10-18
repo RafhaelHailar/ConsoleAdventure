@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
-using System.Data.Common;
+using System.IO;
 
 public class Game
 {
@@ -59,7 +59,7 @@ public class Game
     }
 
     protected static void ConstructPath(string from, string to)
-    { 
+    {
         bool pathExists = locations.ContainsKey(from);
 
         if (pathExists)
@@ -90,7 +90,7 @@ public class Game
 
     protected static string[] GetDirections(string location)
     {
-        return (string[]) locations[location].ToArray(typeof(string));
+        return (string[])locations[location].ToArray(typeof(string));
     }
 
 
@@ -147,7 +147,7 @@ public class Game
 
         if (!exists) throw new Exception("choice given is not part of choices!");
 
-        switch ( currentChoices )
+        switch (currentChoices)
         {
             case ChoicesKeys.CHANGEPLACE:
                 SetCurrentLocation(choice);
@@ -164,4 +164,17 @@ public class Game
             { "locationStack", locationStack }
         };
     }
+
+    // For Debugging
+    public static void RunDebugging()
+    {
+        string debuggingText = "--DEBUGGING--";
+        debuggingText += "\n\n\nDECISION:\nSTART: " + decisionTree.GetCurrentDecision();
+        decisionTree.Update(GetState());
+        debuggingText += "\nEND: " + decisionTree.GetCurrentDecision();
+        string debugLocationStackString = "\n\n Location Stack:\n" + String.Join(",", locationStack.ToArray(typeof(string)) as string[]);
+        debuggingText += debugLocationStackString;
+        File.WriteAllText("debugging.txt", debuggingText);
+    }
+
 }

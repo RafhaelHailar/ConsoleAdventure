@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 
 public class Input
 {
@@ -48,7 +49,7 @@ public class Input
                 break;
             case UserState.CHOOSING:
                 Console.WriteLine("You are at {0} goto: (press \\Enter or \\Space to choose) \n", Game.GetCurrentLocation());
-                 
+  
                 switch (name.Key)
                 {
                     case ConsoleKey.Enter:
@@ -56,21 +57,26 @@ public class Input
                         string[] choose = Game.GetCurrentChoices();
                         Game.MakeChoice(choose[chooseLevel]);
                         chooseLevel = 0;
+
+
+                        //Dictionary<string, object> state = Game.GetState();
+                        //decisionTree.Update(state);
+
+                        // For Debugging;
+                        Game.RunDebugging();
+
                         break;
                     case ConsoleKey.UpArrow:
                         MoveChoice(-1);
                         break;
                     case ConsoleKey.DownArrow:
                         MoveChoice(1);
-                        break;
+                        break;  
                 }
 
                 display.DisplayChoices(Game.GetCurrentChoices(), chooseLevel);
                 break;
         }
-        //Console.WriteLine("\n\n\n\n\n\n{0}", decisionTree.GetCurrentDecision());
-        decisionTree.Update(Game.GetState());
-        //Console.WriteLine("\n\n\n\n\n\n{0}", decisionTree.GetCurrentDecision());
         AskForInput();
     }
 
