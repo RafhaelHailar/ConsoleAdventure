@@ -6,4 +6,4 @@ START: start
 END: start
 
  Location Stack:
-center,spacious living room,family history room,spacious living room,center,wine room,center,spacious living room,center,spacious living room,center
+center,spacious living room,center

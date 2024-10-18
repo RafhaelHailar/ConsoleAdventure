@@ -6,35 +6,29 @@ using System.Timers;
 
 public class Display
 {
-    private static System.Timers.Timer aTimer = new System.Timers.Timer();
+    private static Timer aTimer = new Timer();
     private int pointer = 0;
     private int counter = 0;
     private string currentText = "";
     private string previousText = null;
-
-    public enum DisplayTextsKeys
-    {
-        INTRO,
-        INTHECENTER
-    }
 
     public Display()
     {
 
     }
 
-    public void DisplayText(DisplayTextsKeys target)
+    public void DisplayText(string text)
     {
         aTimer.Dispose();
         aTimer.Stop();
-        currentText = DisplayTexts[target];
+        currentText = text;
         previousText = currentText;
         AnimateText();
     }
 
     private void AnimateText()
     {
-        aTimer = new System.Timers.Timer(70);
+        aTimer = new Timer(70);
         aTimer.Elapsed += ShowTimeText;
         aTimer.Enabled = true;
     }
@@ -97,14 +91,4 @@ public class Display
             Console.WriteLine("[{0}] {1}", value, line);
         }
     }
-
-    static readonly Dictionary<DisplayTextsKeys, string> DisplayTexts = new Dictionary<DisplayTextsKeys, string>
-    {
-        {
-            DisplayTextsKeys.INTRO,"Welcome, to the game of console"
-        },
-        {
-            DisplayTextsKeys.INTHECENTER,"You are now in the center of the mansion!"
-        },
-    };
 }

@@ -10,7 +10,7 @@ public class Input
         CHOOSING
     }
 
-    private UserState userState = UserState.CHOOSING;
+    private UserState userState = UserState.MONOLOGUES;
 
     Display display;
     DecisionTree decisionTree;
@@ -32,32 +32,31 @@ public class Input
         switch (userState)
         {
             case UserState.MONOLOGUES:
-                if (name.Key == ConsoleKey.Enter && !display.IsDisplaying())
+                if (name.Key == ConsoleKey.Enter || name.Key == ConsoleKey.Spacebar)
                 {
-                    Console.WriteLine("Ended");
-                }
-
-                if (name.Key != ConsoleKey.Enter || !display.IsDisplaying())
+                    if (!display.IsDisplaying())
+                    {
+                        Console.WriteLine("Ended");
+                    } else
+                    {
+                        userState = UserState.CHOOSING;
+                        display.EndDisplayText();
+                    }
+                } else if (!display.IsDisplaying())
                 {
                     display.ReDisplayText();
-                    Console.WriteLine(name.Key);
-                }
-                else
-                {
-                    display.EndDisplayText();
-                }
+                  //  Console.WriteLine(name.Key);
+                } 
                 break;
             case UserState.CHOOSING:
-                Console.WriteLine("You are at {0} goto: (press \\Enter or \\Space to choose) \n", Game.GetCurrentLocation());
-  
                 switch (name.Key)
                 {
                     case ConsoleKey.Enter:
                     case ConsoleKey.Spacebar:
+                        //Console.WriteLine("You are at {0} goto: (press \\Enter or \\Space to choose) \n", Game.GetCurrentLocation());
                         string[] choose = Game.GetCurrentChoices();
                         Game.MakeChoice(choose[chooseLevel]);
                         chooseLevel = 0;
-
 
                         //Dictionary<string, object> state = Game.GetState();
                         //decisionTree.Update(state);
@@ -73,7 +72,9 @@ public class Input
                         MoveChoice(1);
                         break;  
                 }
-
+                Console.WriteLine("You are at {0} \n", Game.GetCurrentLocation());
+                Console.WriteLine("Press \\Enter or \\Space to choose");
+                Console.WriteLine("Goto: ");
                 display.DisplayChoices(Game.GetCurrentChoices(), chooseLevel);
                 break;
         }

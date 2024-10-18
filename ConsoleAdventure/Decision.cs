@@ -12,10 +12,17 @@ public class DecisionTree
         DecisionNode testPath2 = new DecisionNode("test path 2");
         DecisionNode testPath3 = new DecisionNode("test path 3", (state) =>
         {
-            string location = (string) state["currentLocation"];
+            string location = (string)state["currentLocation"];
             if (location.Equals("study room")) return true;
             return false;
         });
+        //},
+        //    new Dictionary<object, object>
+        //    {
+        //        {  Input.UserState.MONOLOGUES, Display.DisplayTextsKeys.INTRO },
+        //        {  Input.UserState.CHOOSING, Game.ChoicesKeys.CHANGEPLACE }
+        //    }
+        //);
         DecisionNode testPath3Path1 = new DecisionNode("test path 3 path 1", (state) =>
         {
             string location = (string)state["currentLocation"];

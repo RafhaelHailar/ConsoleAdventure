@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using System.IO;
+using static Display;
 
 public class Game
 {
@@ -19,6 +20,23 @@ public class Game
         { "family history room", "wine room" },
         { "wine room", "center" },
     };
+
+    public enum MonologueKeys
+    {
+        INTRO,
+        INTHECENTER
+    }
+
+    public static readonly Dictionary<MonologueKeys, string> MonologueTexts = new Dictionary<MonologueKeys, string>
+    {
+        {
+            MonologueKeys.INTRO,"Welcome, to the game of console"
+        },
+        {
+            MonologueKeys.INTHECENTER,"You are now in the center of the mansion!"
+        },
+    };
+
     public enum ChoicesKeys
     {
         CHANGEPLACE
@@ -35,7 +53,7 @@ public class Game
 
     // components initialization
     private static readonly Display display = new Display();
-    static DecisionTree decisionTree = new DecisionTree();
+    static readonly DecisionTree decisionTree = new DecisionTree();
 
     public Game() {
         CreateLocation();
@@ -55,6 +73,7 @@ public class Game
 
         //    Console.WriteLine("");
         //}
+        display.DisplayText(MonologueTexts[MonologueKeys.INTRO]);
         input.AskForInput();
     }
 
