@@ -25,9 +25,6 @@ public class Input
 
     private InputState inputState = InputState.MONOLOGUES;
 
-    // monologue is displaying
-    bool isMonologueDisplaying = true;
-
     // component
     readonly Game game;
 
@@ -47,23 +44,20 @@ public class Input
             case InputState.MONOLOGUES:
                 if (name.Key == ConsoleKey.Enter || name.Key == ConsoleKey.Spacebar)
                 {
-                    if (!isMonologueDisplaying)
+                    if (!game.display.IsDisplaying())
                     {
                         game.decisionTree.ExecuteDecisionPlan();
                         if (inputState == InputState.CHOOSING)
                         {
                             game.display.DisplayChoices(game.GetCurrentChoices(), chooseLevel);
                         }
-                        isMonologueDisplaying = true;
                     } else
                     {
-                        isMonologueDisplaying = false;
-                        game.display.EndDisplayText();
+                       game.display.EndDisplayText();
                     }
                 } else if (!game.display.IsDisplaying())
                 {
                     game.display.ReDisplayText();
-                    isMonologueDisplaying = false;
                 }
                 break;
             case InputState.CHOOSING:
