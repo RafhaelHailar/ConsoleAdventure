@@ -1,13 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
 using System;
+using System.Data.Common;
 
 public class DecisionTree
 {
-    private DecisionNode currentDecision; 
+    private DecisionNode currentDecision;
+    readonly Display display;
 
-    public DecisionTree()
+    public DecisionTree(Display display)
     {
+        // connect other components
+        this.display = display;
+
+
+        // decision tree nodes.
         DecisionNode testPath1 = new DecisionNode("test path 1");
         DecisionNode testPath2 = new DecisionNode("test path 2");
         DecisionNode testPath3 = new DecisionNode("test path 3", (state) =>
@@ -15,14 +22,12 @@ public class DecisionTree
             string location = (string)state["currentLocation"];
             if (location.Equals("study room")) return true;
             return false;
-        });
-        //},
-        //    new Dictionary<object, object>
-        //    {
-        //        {  Input.UserState.MONOLOGUES, Display.DisplayTextsKeys.INTRO },
-        //        {  Input.UserState.CHOOSING, Game.ChoicesKeys.CHANGEPLACE }
-        //    }
-        //);
+        },
+           new InputMapping[] {
+               new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.INTRO),
+               new InputMapping(Input.InputState.CHOOSING, Game.ChoicesKeys.CHANGEPLACE)
+           }
+        );
         DecisionNode testPath3Path1 = new DecisionNode("test path 3 path 1", (state) =>
         {
             string location = (string)state["currentLocation"];
@@ -52,6 +57,11 @@ public class DecisionTree
         currentDecision = decision;
     }
 
+    private void ExecuteDecisionPlan(DecisionNode decision)
+    {
+        currentDecision.
+    }
+
     public void Update(Dictionary<string, object> state)
     {
         string[] choices = currentDecision.GetChoices();
@@ -69,15 +79,18 @@ public class DecisionTree
 
     class DecisionNode
     {
-        private string name;
+        private readonly string name;
         private readonly Dictionary<string, DecisionNode> branches = new Dictionary<string, DecisionNode>();
         private readonly ArrayList choices = new ArrayList();
+        private readonly InputMapping[] plan;
+        private int currentPlanIndex = 0;
         public Func<Dictionary<string, object>, bool> Prerequisite { get; set; }
 
-        public DecisionNode(string name, Func<Dictionary<string, object>, bool> prerequisite = null)
+        public DecisionNode(string name, Func<Dictionary<string, object>, bool> prerequisite = null, InputMapping[] plan = null)
         {
             this.name = name;
             this.Prerequisite = prerequisite ?? (state => false);
+            this.plan = plan ?? new InputMapping[] { };
         }
         
 
@@ -100,6 +113,22 @@ public class DecisionTree
         public string GetName()
         {
             return this.name;
+        }
+
+        public void ExecutePlan(Display display)
+        {
+            if (plan.Length == currentPlanIndex) return;
+
+            InputMapping currentPlan =  plan[currentPlanIndex];
+
+            switch (currentPlan.State)
+            {
+                case Input.InputState.MONOLOGUES:
+                    display.DisplayText(Game.GetMonologue((Game.MonologueKeys) currentPlan.Key));
+                    break;
+                case Input.InputState.CHOOSING:
+                    break;
+            }
         }
     }
 }

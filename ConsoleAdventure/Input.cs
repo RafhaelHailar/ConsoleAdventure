@@ -2,15 +2,27 @@
 using System.Collections.Generic;
 using System.Collections;
 
+public struct InputMapping
+{
+    public Input.InputState State { get; }
+    public object Key { get; }
+
+    public InputMapping(Input.InputState state, object key)
+    {
+        State = state;
+        Key = key;
+    }
+}
+
 public class Input
 {
-    public enum UserState
+    public enum InputState
     {
         MONOLOGUES,
         CHOOSING
     }
 
-    private UserState userState = UserState.MONOLOGUES;
+    private InputState inputState = InputState.MONOLOGUES;
 
     Display display;
     DecisionTree decisionTree;
@@ -29,9 +41,9 @@ public class Input
         
         Console.Clear();
 
-        switch (userState)
+        switch (inputState)
         {
-            case UserState.MONOLOGUES:
+            case InputState.MONOLOGUES:
                 if (name.Key == ConsoleKey.Enter || name.Key == ConsoleKey.Spacebar)
                 {
                     if (!display.IsDisplaying())
@@ -39,7 +51,7 @@ public class Input
                         Console.WriteLine("Ended");
                     } else
                     {
-                        userState = UserState.CHOOSING;
+                        inputState = InputState.CHOOSING;
                         display.EndDisplayText();
                     }
                 } else if (!display.IsDisplaying())
@@ -48,7 +60,7 @@ public class Input
                   //  Console.WriteLine(name.Key);
                 } 
                 break;
-            case UserState.CHOOSING:
+            case InputState.CHOOSING:
                 switch (name.Key)
                 {
                     case ConsoleKey.Enter:

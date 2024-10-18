@@ -27,7 +27,7 @@ public class Game
         INTHECENTER
     }
 
-    public static readonly Dictionary<MonologueKeys, string> MonologueTexts = new Dictionary<MonologueKeys, string>
+    private static readonly Dictionary<MonologueKeys, string> MonologueTexts = new Dictionary<MonologueKeys, string>
     {
         {
             MonologueKeys.INTRO,"Welcome, to the game of console"
@@ -53,7 +53,7 @@ public class Game
 
     // components initialization
     private static readonly Display display = new Display();
-    static readonly DecisionTree decisionTree = new DecisionTree();
+    static readonly DecisionTree decisionTree = new DecisionTree(display);
 
     public Game() {
         CreateLocation();
@@ -107,6 +107,7 @@ public class Game
         }
     }
 
+    // get the direction player can move on a given location.
     protected static string[] GetDirections(string location)
     {
         return (string[])locations[location].ToArray(typeof(string));
@@ -172,6 +173,12 @@ public class Game
                 SetCurrentLocation(choice);
                 break;
         }
+    }
+
+    // Retrieve Monologue
+    public static string GetMonologue(MonologueKeys key)
+    {
+        return MonologueTexts[key];
     }
 
     // Retrieve Game States
