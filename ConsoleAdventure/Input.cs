@@ -1,87 +1,121 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
+
+public struct InputMapping
+{
+    public Input.InputState State { get; }
+    public object Key { get; }
+
+    public InputMapping(Input.InputState state, object key)
+    {
+        State = state;
+        Key = key;
+    }
+}
 
 public class Input
 {
-    public enum UserState
+    // input state
+    public enum InputState
     {
         MONOLOGUES,
         CHOOSING
     }
 
-    private UserState userState = UserState.CHOOSING;
+    private InputState inputState = InputState.MONOLOGUES;
 
-    Display display;
-    DecisionTree decisionTree;
+    // monologue is displaying
+    bool isMonologueDisplaying = true;
+
+    // component
+    readonly Game game;
 
     private int chooseLevel = 0;
-    public Input(Display display, DecisionTree decisionTree) {
-        this.display = display;
-        this.decisionTree = decisionTree;
-
-    //    display.DisplayText(Display.DisplayTextsKeys.INTRO);
+    public Input(Game game) {
+        // component
+        this.game = game;
     } 
 
     public void AskForInput()
     {
         ConsoleKeyInfo name = Console.ReadKey();
-        
         Console.Clear();
 
-        switch (userState)
+        switch (inputState)
         {
-            case UserState.MONOLOGUES:
-                if (name.Key == ConsoleKey.Enter && !display.IsDisplaying())
+            case InputState.MONOLOGUES:
+                if (name.Key == ConsoleKey.Enter || name.Key == ConsoleKey.Spacebar)
                 {
-                    Console.WriteLine("Ended");
-                }
-
-                if (name.Key != ConsoleKey.Enter || !display.IsDisplaying())
+                    if (!isMonologueDisplaying)
+                    {
+                        game.decisionTree.ExecuteDecisionPlan();
+                        if (inputState == InputState.CHOOSING)
+                        {
+                            game.display.DisplayChoices(game.GetCurrentChoices(), chooseLevel);
+                        }
+                        isMonologueDisplaying = true;
+                    } else
+                    {
+                        isMonologueDisplaying = false;
+                        game.display.EndDisplayText();
+                    }
+                } else if (!game.display.IsDisplaying())
                 {
-                    display.ReDisplayText();
-                    Console.WriteLine(name.Key);
-                }
-                else
-                {
-                    display.EndDisplayText();
+                    game.display.ReDisplayText();
+                    isMonologueDisplaying = false;
                 }
                 break;
-            case UserState.CHOOSING:
-                Console.WriteLine("You are at {0} goto: (press \\Enter or \\Space to choose) \n", Game.GetCurrentLocation());
-                 
+            case InputState.CHOOSING:
                 switch (name.Key)
                 {
                     case ConsoleKey.Enter:
                     case ConsoleKey.Spacebar:
-                        string[] choose = Game.GetCurrentChoices();
-                        Game.MakeChoice(choose[chooseLevel]);
+                        //Console.WriteLine("You are at {0} goto: (press \\Enter or \\Space to choose) \n", Game.GetCurrentLocation());
+                        string[] choose = game.GetCurrentChoices();
+                        game.MakeChoice(choose[chooseLevel]);
                         chooseLevel = 0;
+
+                        //Dictionary<string, object> state = Game.GetState();
+                        //decisionTree.Update(state);
+
+                        game.decisionTree.ExecuteDecisionPlan();
+
                         break;
                     case ConsoleKey.UpArrow:
                         MoveChoice(-1);
                         break;
                     case ConsoleKey.DownArrow:
                         MoveChoice(1);
-                        break;
+                        break;  
                 }
 
-                display.DisplayChoices(Game.GetCurrentChoices(), chooseLevel);
+                game.display.DisplayChoices(game.GetCurrentChoices(), chooseLevel);
                 break;
         }
-        //Console.WriteLine("\n\n\n\n\n\n{0}", decisionTree.GetCurrentDecision());
-        decisionTree.Update(Game.GetState());
-        //Console.WriteLine("\n\n\n\n\n\n{0}", decisionTree.GetCurrentDecision());
+        // For Debugging;
+        game.RunDebugging();
         AskForInput();
     }
 
     protected void MoveChoice(int i)
     {
         int newChooseLevel = i + chooseLevel;
-        string[] choose = Game.GetCurrentChoices();
+        string[] choose = game.GetCurrentChoices();
 
         if (newChooseLevel < 0) newChooseLevel = 0;
         if (newChooseLevel >= choose.Length) newChooseLevel = choose.Length - 1;
 
         chooseLevel = newChooseLevel;
+    }
+
+    public void SetState(InputState state)
+    {
+        inputState = state;
+    }
+
+    public InputState getState()
+    {
+        return inputState;
     }
 }

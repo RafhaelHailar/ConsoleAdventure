@@ -1,0 +1,12 @@
+--DEBUGGING--
+
+
+DECISION:
+START: test path 3
+END: test path 3
+
+ Location Stack:
+center,wine room,center,spacious living room,study room
+
+Input State:
+CHOOSING

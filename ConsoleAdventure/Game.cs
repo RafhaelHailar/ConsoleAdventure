@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
-using System.Data.Common;
+using System.IO;
 
 public class Game
 {
@@ -19,28 +19,62 @@ public class Game
         { "family history room", "wine room" },
         { "wine room", "center" },
     };
-    public enum ChoicesKeys
+
+    public enum MonologueKeys
     {
-        CHANGEPLACE
+        INTRO,
+        INTHECENTER
     }
 
+    private static readonly Dictionary<MonologueKeys, string> MonologueTexts = new Dictionary<MonologueKeys, string>
+    {
+        {
+            MonologueKeys.INTRO,"Welcome, to the game of console"
+        },
+        {
+            MonologueKeys.INTHECENTER,"You are now in the center of the mansion!"
+        },
+    };
+
+    public enum ChoicesKeys
+    {
+        CHANGEPLACE,
+        NAME
+    }
+
+
+    public Dictionary<ChoicesKeys, string[]> Choices = new Dictionary<ChoicesKeys, string[]>
+    {
+        {
+           ChoicesKeys.CHANGEPLACE,
+           new string[]{}
+        },
+        {
+           ChoicesKeys.NAME,
+           new string[] { "Manuel", "Pedro", "Kawowski" }
+        }
+    };
+
     // user input
-    static private ChoicesKeys currentChoices = ChoicesKeys.CHANGEPLACE;
-    private string userInput = "";
+    private ChoicesKeys currentChoices = ChoicesKeys.CHANGEPLACE;
 
     // game state
     protected static string currentLocation = "center";
     protected static ArrayList locationStack = new ArrayList() { currentLocation };
-    private readonly Input input;
 
     // components initialization
-    private static readonly Display display = new Display();
-    static DecisionTree decisionTree = new DecisionTree();
+    public readonly Input input;
+    public readonly Display display;
+    public readonly DecisionTree decisionTree;
 
     public Game() {
-        CreateLocation();
+        // components
+        this.display = new Display();
+        this.decisionTree = new DecisionTree(this);
+        this.input = new Input(this);
 
-        input = new Input(display, decisionTree);
+        // build map
+        CreateLocation();
 
         //foreach (KeyValuePair<string, ArrayList> location in locations)
         //{
@@ -55,11 +89,14 @@ public class Game
 
         //    Console.WriteLine("");
         //}
+
+        // initialize game
+        decisionTree.ExecuteDecisionPlan();
         input.AskForInput();
     }
 
     protected static void ConstructPath(string from, string to)
-    { 
+    {
         bool pathExists = locations.ContainsKey(from);
 
         if (pathExists)
@@ -88,32 +125,24 @@ public class Game
         }
     }
 
+    // get the direction player can move on a given location.
     protected static string[] GetDirections(string location)
     {
-        return (string[]) locations[location].ToArray(typeof(string));
+        return (string[])locations[location].ToArray(typeof(string));
     }
-
-
-    public static Dictionary<ChoicesKeys, string[]> Choices = new Dictionary<ChoicesKeys, string[]>
-    {
-        {
-           ChoicesKeys.CHANGEPLACE,
-           new string[]{}
-        }
-    };
 
     public static string GetCurrentLocation()
     {
         return currentLocation;
     }
 
-    public static void SetCurrentLocation(string location)
+    public void SetCurrentLocation(string location)
     {
         currentLocation = location;
         locationStack.Add(location);
     }
 
-    public static string[] GetCurrentChoices()
+    public string[] GetCurrentChoices()
     {
         switch (currentChoices)
         {
@@ -123,12 +152,12 @@ public class Game
         return Choices[currentChoices];
     }
 
-    public static void SetCurrentChoices(ChoicesKeys choicesKeys)
+    public void SetCurrentChoices(ChoicesKeys choicesKeys)
     {
         currentChoices = choicesKeys;
     }
 
-    public static void MakeChoice(string choice)
+    public void MakeChoice(string choice)
     {
         if (choice == null) throw new ArgumentNullException();
 
@@ -147,12 +176,21 @@ public class Game
 
         if (!exists) throw new Exception("choice given is not part of choices!");
 
-        switch ( currentChoices )
+        switch (currentChoices)
         {
             case ChoicesKeys.CHANGEPLACE:
                 SetCurrentLocation(choice);
                 break;
+            case ChoicesKeys.NAME:
+                Console.WriteLine(choice);
+                break;
         }
+    }
+
+    // Retrieve Monologue
+    public static string GetMonologue(MonologueKeys key)
+    {
+        return MonologueTexts[key];
     }
 
     // Retrieve Game States
@@ -164,4 +202,19 @@ public class Game
             { "locationStack", locationStack }
         };
     }
+
+    // For Debugging
+    public void RunDebugging()
+    {
+        string debuggingText = "--DEBUGGING--";
+        debuggingText += "\n\n\nDECISION:\nSTART: " + decisionTree.GetCurrentDecision();
+        decisionTree.Update(GetState());
+        debuggingText += "\nEND: " + decisionTree.GetCurrentDecision();
+        string debugLocationStackString = "\n\n Location Stack:\n" + String.Join(",", locationStack.ToArray(typeof(string)) as string[]);
+        debuggingText += debugLocationStackString;
+        debuggingText += "\n\nInput State:\n" + input.getState();
+
+        File.WriteAllText("debugging.txt", debuggingText);
+    }
+
 }
