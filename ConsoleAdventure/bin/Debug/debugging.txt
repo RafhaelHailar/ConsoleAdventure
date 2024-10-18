@@ -2,11 +2,11 @@
 
 
 DECISION:
-START: test path 3 path 1
-END: test path 3 path 1
+START: test path 3
+END: test path 3
 
  Location Stack:
-center,spacious living room,study room,spacious living room,center,spacious living room,center
+center,wine room,center,spacious living room,study room
 
 Input State:
 CHOOSING

@@ -64,7 +64,7 @@ public class Input
                 {
                     game.display.ReDisplayText();
                     isMonologueDisplaying = false;
-                } 
+                }
                 break;
             case InputState.CHOOSING:
                 switch (name.Key)

@@ -80,6 +80,7 @@ public class Display
 
         StopTimer();
         Console.WriteLine(currentText);
+        ResetDisplayText();
     }
 
     public void DisplayChoices(string[] choose, int chooseLevel)
