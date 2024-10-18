@@ -16,6 +16,7 @@ public struct InputMapping
 
 public class Input
 {
+    // input state
     public enum InputState
     {
         MONOLOGUES,
@@ -24,21 +25,21 @@ public class Input
 
     private InputState inputState = InputState.MONOLOGUES;
 
-    Display display;
-    DecisionTree decisionTree;
+    // monologue is displaying
+    bool isMonologueDisplaying = true;
+
+    // component
+    readonly Game game;
 
     private int chooseLevel = 0;
-    public Input(Display display, DecisionTree decisionTree) {
-        this.display = display;
-        this.decisionTree = decisionTree;
-
-    //    display.DisplayText(Display.DisplayTextsKeys.INTRO);
+    public Input(Game game) {
+        // component
+        this.game = game;
     } 
 
     public void AskForInput()
     {
         ConsoleKeyInfo name = Console.ReadKey();
-        
         Console.Clear();
 
         switch (inputState)
@@ -46,18 +47,23 @@ public class Input
             case InputState.MONOLOGUES:
                 if (name.Key == ConsoleKey.Enter || name.Key == ConsoleKey.Spacebar)
                 {
-                    if (!display.IsDisplaying())
+                    if (!isMonologueDisplaying)
                     {
-                        Console.WriteLine("Ended");
+                        game.decisionTree.ExecuteDecisionPlan();
+                        if (inputState == InputState.CHOOSING)
+                        {
+                            game.display.DisplayChoices(game.GetCurrentChoices(), chooseLevel);
+                        }
+                        isMonologueDisplaying = true;
                     } else
                     {
-                        inputState = InputState.CHOOSING;
-                        display.EndDisplayText();
+                        isMonologueDisplaying = false;
+                        game.display.EndDisplayText();
                     }
-                } else if (!display.IsDisplaying())
+                } else if (!game.display.IsDisplaying())
                 {
-                    display.ReDisplayText();
-                  //  Console.WriteLine(name.Key);
+                    game.display.ReDisplayText();
+                    isMonologueDisplaying = false;
                 } 
                 break;
             case InputState.CHOOSING:
@@ -66,15 +72,14 @@ public class Input
                     case ConsoleKey.Enter:
                     case ConsoleKey.Spacebar:
                         //Console.WriteLine("You are at {0} goto: (press \\Enter or \\Space to choose) \n", Game.GetCurrentLocation());
-                        string[] choose = Game.GetCurrentChoices();
-                        Game.MakeChoice(choose[chooseLevel]);
+                        string[] choose = game.GetCurrentChoices();
+                        game.MakeChoice(choose[chooseLevel]);
                         chooseLevel = 0;
 
                         //Dictionary<string, object> state = Game.GetState();
                         //decisionTree.Update(state);
 
-                        // For Debugging;
-                        Game.RunDebugging();
+                        game.decisionTree.ExecuteDecisionPlan();
 
                         break;
                     case ConsoleKey.UpArrow:
@@ -84,23 +89,33 @@ public class Input
                         MoveChoice(1);
                         break;  
                 }
-                Console.WriteLine("You are at {0} \n", Game.GetCurrentLocation());
-                Console.WriteLine("Press \\Enter or \\Space to choose");
-                Console.WriteLine("Goto: ");
-                display.DisplayChoices(Game.GetCurrentChoices(), chooseLevel);
+
+                game.display.DisplayChoices(game.GetCurrentChoices(), chooseLevel);
                 break;
         }
+        // For Debugging;
+        game.RunDebugging();
         AskForInput();
     }
 
     protected void MoveChoice(int i)
     {
         int newChooseLevel = i + chooseLevel;
-        string[] choose = Game.GetCurrentChoices();
+        string[] choose = game.GetCurrentChoices();
 
         if (newChooseLevel < 0) newChooseLevel = 0;
         if (newChooseLevel >= choose.Length) newChooseLevel = choose.Length - 1;
 
         chooseLevel = newChooseLevel;
+    }
+
+    public void SetState(InputState state)
+    {
+        inputState = state;
+    }
+
+    public InputState getState()
+    {
+        return inputState;
     }
 }

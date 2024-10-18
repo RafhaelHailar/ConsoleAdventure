@@ -6,12 +6,12 @@ using System.Data.Common;
 public class DecisionTree
 {
     private DecisionNode currentDecision;
-    readonly Display display;
+    readonly Game game;
 
-    public DecisionTree(Display display)
+    public DecisionTree(Game game)
     {
         // connect other components
-        this.display = display;
+        this.game = game;
 
 
         // decision tree nodes.
@@ -25,6 +25,7 @@ public class DecisionTree
         },
            new InputMapping[] {
                new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.INTRO),
+               new InputMapping(Input.InputState.CHOOSING, Game.ChoicesKeys.NAME),
                new InputMapping(Input.InputState.CHOOSING, Game.ChoicesKeys.CHANGEPLACE)
            }
         );
@@ -34,7 +35,11 @@ public class DecisionTree
             if (location.Equals("center")) return true;
             return false;
         });
-        DecisionNode start = new DecisionNode("start");
+        DecisionNode start = new DecisionNode("start", null, new InputMapping[] {
+               new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.INTRO),
+               new InputMapping(Input.InputState.CHOOSING, Game.ChoicesKeys.NAME),
+               new InputMapping(Input.InputState.CHOOSING, Game.ChoicesKeys.CHANGEPLACE)
+        });
 
         // test 3 path branches
         testPath3.AddBranch("go to path 1 from path 3", testPath3Path1); // test path 3 path1
@@ -55,11 +60,13 @@ public class DecisionTree
     private void UpdateCurrentDecision(DecisionNode decision)
     {
         currentDecision = decision;
+        ExecuteDecisionPlan();
     }
 
-    private void ExecuteDecisionPlan(DecisionNode decision)
+    public void ExecuteDecisionPlan()
     {
-        currentDecision.
+        currentDecision.ExecutePlan(game);
+        currentDecision.NextPlan();
     }
 
     public void Update(Dictionary<string, object> state)
@@ -115,20 +122,30 @@ public class DecisionTree
             return this.name;
         }
 
-        public void ExecutePlan(Display display)
+        public void ExecutePlan(Game game)
         {
-            if (plan.Length == currentPlanIndex) return;
+            if (plan.Length <= currentPlanIndex) return;
 
             InputMapping currentPlan =  plan[currentPlanIndex];
 
             switch (currentPlan.State)
             {
                 case Input.InputState.MONOLOGUES:
-                    display.DisplayText(Game.GetMonologue((Game.MonologueKeys) currentPlan.Key));
+                    game.input.SetState(Input.InputState.MONOLOGUES);
+                    game.display.DisplayText(Game.GetMonologue((Game.MonologueKeys) currentPlan.Key));
                     break;
                 case Input.InputState.CHOOSING:
+                    game.input.SetState(Input.InputState.CHOOSING);
+                    game.SetCurrentChoices((Game.ChoicesKeys) currentPlan.Key);
                     break;
+                default:
+                    throw new Exception("Given State Is Invalid!");
             }
+        }
+
+        public void NextPlan()
+        {
+            currentPlanIndex++;
         }
     }
 }

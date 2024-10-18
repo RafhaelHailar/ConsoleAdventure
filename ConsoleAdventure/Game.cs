@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections;
 using System.IO;
-using static Display;
 
 public class Game
 {
@@ -39,26 +38,43 @@ public class Game
 
     public enum ChoicesKeys
     {
-        CHANGEPLACE
+        CHANGEPLACE,
+        NAME
     }
 
+
+    public Dictionary<ChoicesKeys, string[]> Choices = new Dictionary<ChoicesKeys, string[]>
+    {
+        {
+           ChoicesKeys.CHANGEPLACE,
+           new string[]{}
+        },
+        {
+           ChoicesKeys.NAME,
+           new string[] { "Manuel", "Pedro", "Kawowski" }
+        }
+    };
+
     // user input
-    static private ChoicesKeys currentChoices = ChoicesKeys.CHANGEPLACE;
-    private string userInput = "";
+    private ChoicesKeys currentChoices = ChoicesKeys.CHANGEPLACE;
 
     // game state
     protected static string currentLocation = "center";
     protected static ArrayList locationStack = new ArrayList() { currentLocation };
-    private readonly Input input;
 
     // components initialization
-    private static readonly Display display = new Display();
-    static readonly DecisionTree decisionTree = new DecisionTree(display);
+    public readonly Input input;
+    public readonly Display display;
+    public readonly DecisionTree decisionTree;
 
     public Game() {
-        CreateLocation();
+        // components
+        this.display = new Display();
+        this.decisionTree = new DecisionTree(this);
+        this.input = new Input(this);
 
-        input = new Input(display, decisionTree);
+        // build map
+        CreateLocation();
 
         //foreach (KeyValuePair<string, ArrayList> location in locations)
         //{
@@ -73,7 +89,9 @@ public class Game
 
         //    Console.WriteLine("");
         //}
-        display.DisplayText(MonologueTexts[MonologueKeys.INTRO]);
+
+        // initialize game
+        decisionTree.ExecuteDecisionPlan();
         input.AskForInput();
     }
 
@@ -113,27 +131,18 @@ public class Game
         return (string[])locations[location].ToArray(typeof(string));
     }
 
-
-    public static Dictionary<ChoicesKeys, string[]> Choices = new Dictionary<ChoicesKeys, string[]>
-    {
-        {
-           ChoicesKeys.CHANGEPLACE,
-           new string[]{}
-        }
-    };
-
     public static string GetCurrentLocation()
     {
         return currentLocation;
     }
 
-    public static void SetCurrentLocation(string location)
+    public void SetCurrentLocation(string location)
     {
         currentLocation = location;
         locationStack.Add(location);
     }
 
-    public static string[] GetCurrentChoices()
+    public string[] GetCurrentChoices()
     {
         switch (currentChoices)
         {
@@ -143,12 +152,12 @@ public class Game
         return Choices[currentChoices];
     }
 
-    public static void SetCurrentChoices(ChoicesKeys choicesKeys)
+    public void SetCurrentChoices(ChoicesKeys choicesKeys)
     {
         currentChoices = choicesKeys;
     }
 
-    public static void MakeChoice(string choice)
+    public void MakeChoice(string choice)
     {
         if (choice == null) throw new ArgumentNullException();
 
@@ -172,6 +181,9 @@ public class Game
             case ChoicesKeys.CHANGEPLACE:
                 SetCurrentLocation(choice);
                 break;
+            case ChoicesKeys.NAME:
+                Console.WriteLine(choice);
+                break;
         }
     }
 
@@ -192,7 +204,7 @@ public class Game
     }
 
     // For Debugging
-    public static void RunDebugging()
+    public void RunDebugging()
     {
         string debuggingText = "--DEBUGGING--";
         debuggingText += "\n\n\nDECISION:\nSTART: " + decisionTree.GetCurrentDecision();
@@ -200,6 +212,8 @@ public class Game
         debuggingText += "\nEND: " + decisionTree.GetCurrentDecision();
         string debugLocationStackString = "\n\n Location Stack:\n" + String.Join(",", locationStack.ToArray(typeof(string)) as string[]);
         debuggingText += debugLocationStackString;
+        debuggingText += "\n\nInput State:\n" + input.getState();
+
         File.WriteAllText("debugging.txt", debuggingText);
     }
 
