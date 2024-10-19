@@ -49,7 +49,7 @@ public class Input
                         game.decisionTree.ExecuteDecisionPlan();
                         if (inputState == InputState.CHOOSING)
                         {
-                            game.display.DisplayChoices(game.GetCurrentChoices(), chooseLevel);
+                            TriggerChoicesDisplay();
                         }
                     } else
                     {
@@ -84,7 +84,7 @@ public class Input
                         break;  
                 }
 
-                game.display.DisplayChoices(game.GetCurrentChoices(), chooseLevel);
+                TriggerChoicesDisplay();
                 break;
         }
         // For Debugging;
@@ -103,10 +103,16 @@ public class Input
         chooseLevel = newChooseLevel;
     }
 
+    private void TriggerChoicesDisplay()
+    {
+        game.display.DisplayChoices(game.GetCurrentChoicesText(), game.GetCurrentChoices(), chooseLevel);
+    }
+
     public void SetState(InputState state)
     {
         inputState = state;
     }
+
 
     public InputState getState()
     {

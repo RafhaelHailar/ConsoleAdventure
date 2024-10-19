@@ -83,11 +83,11 @@ public class Display
         ResetDisplayText();
     }
 
-    public void DisplayChoices(string[] choose, int chooseLevel)
+    public void DisplayChoices(string chooseText, string[] choose, int chooseLevel)
     {
         Console.WriteLine("You are at {0} \n", Game.GetCurrentLocation());
-        Console.WriteLine("Press \\Enter or \\Space to choose");
-        Console.WriteLine("Goto: ");
+        Console.Write(chooseText);
+        Console.Write("(Press \\Enter or \\Space to choose)\n");
         for (int i = 0; i < choose.Length; i++)
         {
             string line = choose[i];

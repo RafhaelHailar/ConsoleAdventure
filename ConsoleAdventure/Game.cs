@@ -42,6 +42,17 @@ public class Game
         NAME
     }
 
+    public Dictionary<ChoicesKeys, string> ChoicesText = new Dictionary<ChoicesKeys, string>
+    {
+        {
+           ChoicesKeys.CHANGEPLACE,
+           "Goto: "
+        },
+        {
+           ChoicesKeys.NAME,
+           "Choose your name: "
+        }
+    };
 
     public Dictionary<ChoicesKeys, string[]> Choices = new Dictionary<ChoicesKeys, string[]>
     {
@@ -150,6 +161,10 @@ public class Game
                 return GetDirections(currentLocation);
         }
         return Choices[currentChoices];
+    }
+    public string GetCurrentChoicesText()
+    {
+        return ChoicesText[currentChoices]; 
     }
 
     public void SetCurrentChoices(ChoicesKeys choicesKeys)
