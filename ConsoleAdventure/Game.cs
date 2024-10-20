@@ -84,8 +84,8 @@ public class Game
     private ChoicesKeys currentChoices = ChoicesKeys.CHANGEPLACE;
 
     // game state
-    protected static Location currentLocation = Location.SECOND_FLOOR_HALLWAY;
-    protected static ArrayList locationStack = new ArrayList();
+    protected Location currentLocation = Location.SECOND_FLOOR_HALLWAY;
+    protected ArrayList locationStack = new ArrayList();
 
     // components initialization
     public readonly Input input;
@@ -94,7 +94,7 @@ public class Game
 
     public Game() {
         // components
-        this.display = new Display();
+        this.display = new Display(this);
         this.decisionTree = new DecisionTree(this);
         this.input = new Input(this);
 
@@ -144,16 +144,17 @@ public class Game
             Location to = directions[i, 1];
 
             ConstructPath(from, locationMap[to]);
+            ConstructPath(to, locationMap[from]);
         }
     }
 
     // get the direction player can move on a given location.
     protected static string[] GetDirections(Location location)
     {
-        return (string[])locations[location].ToArray(typeof(string));
+        return (string[]) locations[location].ToArray(typeof(string));
     }
 
-    public static Location GetCurrentLocation()
+    public Location GetCurrentLocation()
     {
         return currentLocation;
     }
@@ -220,7 +221,7 @@ public class Game
     }
 
     // Retrieve Game States
-    public static Dictionary<string, object> GetState()
+    public Dictionary<string, object> GetState()
     {
         return new Dictionary<string, object>
         {

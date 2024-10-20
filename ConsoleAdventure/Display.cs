@@ -12,9 +12,12 @@ public class Display
     private string currentText = "";
     private string previousText = null;
 
-    public Display()
-    {
+    // component
+    Game game;
 
+    public Display(Game game)
+    {
+        this.game = game;
     }
 
     public void DisplayText(string text)
@@ -85,7 +88,7 @@ public class Display
 
     public void DisplayChoices(string chooseText, string[] choose, int chooseLevel)
     {
-        Console.WriteLine("You are at {0} \n", Game.locationMap[Game.GetCurrentLocation()]);
+        Console.WriteLine("You are at {0} \n", Game.locationMap[game.GetCurrentLocation()]);
         Console.Write(chooseText);
         Console.Write("(Press \\Enter or \\Space to choose)\n");
         for (int i = 0; i < choose.Length; i++)
