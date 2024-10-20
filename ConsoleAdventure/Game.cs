@@ -34,6 +34,7 @@ public class Game
         { Location.SECOND_FLOOR_HALLWAY, Location.GAME_ROOM },
     };
 
+    // Monologues
     public enum MonologueKeys
     {
         INTRO,
@@ -50,6 +51,7 @@ public class Game
         },
     };
 
+    // Choices
     public enum ChoicesKeys
     {
         CHANGEPLACE,
@@ -86,6 +88,7 @@ public class Game
     // game state
     protected Location currentLocation = Location.SECOND_FLOOR_HALLWAY;
     protected ArrayList locationStack = new ArrayList();
+    protected Location[] unlockedLocation = new Location[Enum.GetValues(typeof(Location)).Length];
 
     // components initialization
     public readonly Input input;
@@ -112,10 +115,16 @@ public class Game
 
         locationStack.Add(locationMap[currentLocation]);
 
+        // start unlocked locations
+        UnlockLocation(currentLocation);
+        UnlockLocation(Location.NURSERY);
+        UnlockLocation(Location.MAIN_STAIRCASE);
+
         // initialize game
         decisionTree.ExecuteDecisionPlan();
         input.AskForInput();
     }
+
 
     protected static void ConstructPath(Location from, string to)
     {
@@ -154,6 +163,7 @@ public class Game
         return (string[]) locations[location].ToArray(typeof(string));
     }
 
+    // Location Methods
     public Location GetCurrentLocation()
     {
         return currentLocation;
@@ -165,6 +175,12 @@ public class Game
         locationStack.Add(locationMap[location]);
     }
 
+    public void UnlockLocation(Location location)
+    {
+        unlockedLocation[(int)location] = location;
+    }
+
+    // Choices Methods
     public string[] GetCurrentChoices()
     {
         switch (currentChoices)
@@ -229,6 +245,7 @@ public class Game
             { "locationStack", locationStack }
         };
     }
+    
 
     // For Debugging
     public void RunDebugging()
