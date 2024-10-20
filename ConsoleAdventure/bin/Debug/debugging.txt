@@ -6,7 +6,7 @@ START: start center check
 END: start center check
 
  Location Stack:
-Second Floor Hallway,Main Staircase,Second Floor Hallway,Master Bedroom,Second Floor Hallway,Master Bedroom,Second Floor Hallway,Nursery,Second Floor Hallway,Master Bedroom,Second Floor Hallway,Art Studio,Second Floor Hallway,Master Bedroom,Second Floor Hallway,Game Room,Second Floor Hallway,Main Staircase,Second Floor Hallway,Main Staircase,Second Floor Hallway,Game Room,Second Floor Hallway,Gallery Overlook,Second Floor Hallway,Art Studio,Second Floor Hallway,Guest Bedroom,Second Floor Hallway,Nursery,Second Floor Hallway,Nursery,Second Floor Hallway,Nursery,Second Floor Hallway,Guest Bedroom,Second Floor Hallway
+Second Floor Hallway,Main Staircase,Second Floor Hallway,Main Staircase,Second Floor Hallway,Main Staircase,Second Floor Hallway
 
 Input State:
 CHOOSING

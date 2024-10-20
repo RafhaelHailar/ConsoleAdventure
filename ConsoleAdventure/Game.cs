@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using System.Collections;
 using System.IO;
 using ConsoleAdventureUtils;
+using System.Security.Policy;
 
 public class Game
 {
     // Game Location
     public enum Location
     {
+        LOCKED,
+        TRIED,
+
+
+
         SECOND_FLOOR_HALLWAY,
         MAIN_STAIRCASE,
         MASTER_BEDROOM,
@@ -88,7 +94,9 @@ public class Game
     // game state
     protected Location currentLocation = Location.SECOND_FLOOR_HALLWAY;
     protected ArrayList locationStack = new ArrayList();
-    protected Location[] unlockedLocation = new Location[Enum.GetValues(typeof(Location)).Length];
+    protected Location[] unlockedLocation;
+    
+    protected Location[] triedLocation; // for displaying whether location is locked or unlocked after player tried it.
 
     // components initialization
     public readonly Input input;
@@ -116,6 +124,15 @@ public class Game
         locationStack.Add(locationMap[currentLocation]);
 
         // start unlocked locations
+        int totalLocation = Enum.GetValues(typeof(Location)).Length;
+        unlockedLocation = new Location[totalLocation];
+        triedLocation = new Location[totalLocation];
+
+        for (int i = 0; i < totalLocation; i++) {
+            unlockedLocation[i] = Location.LOCKED;
+            triedLocation[i] = Location.TRIED;
+        }
+
         UnlockLocation(currentLocation);
         UnlockLocation(Location.NURSERY);
         UnlockLocation(Location.MAIN_STAIRCASE);
@@ -171,6 +188,19 @@ public class Game
 
     public void SetCurrentLocation(Location location)
     {
+        int locationIndex = (int)location;
+
+        // for logging of the location tried by the player.
+        if (triedLocation[locationIndex] != Location.TRIED)
+        {
+            TryLocation(location);
+        } 
+
+        if (unlockedLocation[locationIndex] == Location.LOCKED)
+        {
+            display.DisplayText("BallZuck");
+            return;
+        }
         currentLocation = location;
         locationStack.Add(locationMap[location]);
     }
@@ -178,6 +208,11 @@ public class Game
     public void UnlockLocation(Location location)
     {
         unlockedLocation[(int)location] = location;
+    }
+
+    public void TryLocation(Location location)
+    {
+        triedLocation[(int)location] = location;
     }
 
     // Choices Methods
