@@ -1,9 +1,12 @@
 ﻿
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using System.Timers;
 
+/**
+ * Dispaly Class, as its name implies display what player sees in the terminal.
+ * - text animation
+ * - choices ui
+ */
 public class Display
 {
     private static Timer aTimer = new Timer();

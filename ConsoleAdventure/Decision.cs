@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
 using System;
-using System.Data.Common;
 
+/**
+ * DecisionTree, creates the story feature. 
+ * - it allows moving through decision node.
+ * - it creates a way for us to have different outcomes for each nodes.
+ */
 public class DecisionTree
 {
     private DecisionNode currentDecision;
@@ -131,6 +135,11 @@ public class DecisionTree
                 default:
                     throw new Exception("Given State Is Invalid!");
             }
+        }
+
+        public Input.InputState GetCurrentPlanInputState()
+        {
+            return plan[currentPlanIndex].State;
         }
 
         public void NextPlan()

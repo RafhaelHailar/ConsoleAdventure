@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections;
 
+/**
+ * InputMapping Class, map the action with the value it will be perform along.
+ * 
+ */
 public struct InputMapping
 {
     public Input.InputState State { get; }
@@ -14,6 +16,10 @@ public struct InputMapping
     }
 }
 
+/**
+ * Input Class, take player keyboard inputs and perform the action the input does.
+ *  - move choices if player is choosing.
+ */
 public class Input
 {
     // input state

@@ -5,16 +5,23 @@ using System.IO;
 using ConsoleAdventureUtils;
 using System.Security.Policy;
 
+/*
+ *  Game Class connnect the different components for the game.
+ *  - holds the location data and its creation.
+ *  - holds the current state of the game (player position, unlocked location).
+ *  - holds monologue texts.
+ *  - holds choices values.
+ */
 public class Game
 {
     // Game Location
     public enum Location
     {
+        // states
         LOCKED,
         TRIED,
 
-
-
+        // location
         SECOND_FLOOR_HALLWAY,
         MAIN_STAIRCASE,
         MASTER_BEDROOM,
@@ -99,6 +106,7 @@ public class Game
     protected Location[] triedLocation; // for displaying whether location is locked or unlocked after player tried it.
 
     // components initialization
+    public readonly Action action;
     public readonly Input input;
     public readonly Display display;
     public readonly DecisionTree decisionTree;
@@ -108,6 +116,7 @@ public class Game
         this.display = new Display(this);
         this.decisionTree = new DecisionTree(this);
         this.input = new Input(this);
+        this.action = new Action();
 
         // build map
         locationMap.Add(Location.SECOND_FLOOR_HALLWAY, "Second Floor Hallway");
