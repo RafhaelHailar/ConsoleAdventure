@@ -14,40 +14,30 @@ public class DecisionTree
         this.game = game;
 
 
-        // decision tree nodes.
-        DecisionNode testPath1 = new DecisionNode("test path 1");
-        DecisionNode testPath2 = new DecisionNode("test path 2");
-        DecisionNode testPath3 = new DecisionNode("test path 3", (state) =>
+        // start path nodes.
+        DecisionNode start_cc = new DecisionNode("start center check", (state) =>
         {
-            string location = (string)state["currentLocation"];
-            if (location.Equals("study room")) return true;
+            Game.Location currentLocation = (Game.Location) state["currentLocation"];
+            if (currentLocation.Equals(Game.Location.MAIN_STAIRCASE))
+            {
+                return true;
+            }
             return false;
-        },
-           new InputMapping[] {
-               new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.INTRO),
-               new InputMapping(Input.InputState.CHOOSING, Game.ChoicesKeys.NAME),
+        }, new InputMapping[] {
+               new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.INTHECENTER),
                new InputMapping(Input.InputState.CHOOSING, Game.ChoicesKeys.CHANGEPLACE)
-           }
-        );
-        DecisionNode testPath3Path1 = new DecisionNode("test path 3 path 1", (state) =>
-        {
-            string location = (string)state["currentLocation"];
-            if (location.Equals("center")) return true;
-            return false;
         });
+
+        // start node
         DecisionNode start = new DecisionNode("start", null, new InputMapping[] {
                new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.INTRO),
-               new InputMapping(Input.InputState.CHOOSING, Game.ChoicesKeys.NAME),
                new InputMapping(Input.InputState.CHOOSING, Game.ChoicesKeys.CHANGEPLACE)
         });
 
-        // test 3 path branches
-        testPath3.AddBranch("go to path 1 from path 3", testPath3Path1); // test path 3 path1
 
         // start path branches
-        start.AddBranch("go to test path 1", testPath1); // test path 1
-        start.AddBranch("go to test path 2", testPath2); // test path 2
-        start.AddBranch("go to test path 3", testPath3); // test path 3
+        start.AddBranch("go to family history room", start_cc);
+
 
         currentDecision = start;
     }

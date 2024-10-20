@@ -85,7 +85,7 @@ public class Display
 
     public void DisplayChoices(string chooseText, string[] choose, int chooseLevel)
     {
-        Console.WriteLine("You are at {0} \n", Game.GetCurrentLocation());
+        Console.WriteLine("You are at {0} \n", Game.locationMap[Game.GetCurrentLocation()]);
         Console.Write(chooseText);
         Console.Write("(Press \\Enter or \\Space to choose)\n");
         for (int i = 0; i < choose.Length; i++)
