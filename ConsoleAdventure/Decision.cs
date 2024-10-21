@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Collections;
 using System;
-using System.IO;
 using System.Linq;
 
 /**
@@ -19,6 +17,30 @@ public class DecisionTree
         // connect other components
         this.game = game;
 
+        // entrance door nodes.
+        DecisionNode msc_toed = new DecisionNode("try opening entrance door", (state) =>
+        {
+            bool triedOpeningEntranceDoor = (bool)state["triedOpeningEntranceDoor"];
+            return triedOpeningEntranceDoor;
+        }, new InputMapping[]
+        {
+            new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.ENTRANCE_DOOR_WAIL)
+        });
+
+        // start wander stair case nodes.
+        DecisionNode msc_ted = new DecisionNode("grand foyer check entrance door", (state) =>
+        {
+            Game.Location currentLocation = (Game.Location)state["currentLocation"];
+            if (currentLocation.Equals(Game.Location.ENTRANCE))
+            {
+                return true;
+            }
+            return false;
+        }, new InputMapping[]
+        {
+            new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.TRY_ENTRANCE_DOOR),
+            new InputMapping(Input.InputState.CHOOSING, Game.ChoicesKeys.OPEN_ENTRANCE_DOOR),
+        });
 
         // start path nodes.
         DecisionNode start_msc = new DecisionNode("wander on the main stair case", (state) =>
@@ -31,7 +53,7 @@ public class DecisionTree
             return false;
         }, new InputMapping[]
         {
-            new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.INTHECENTER)
+            new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.MAIN_STAIRCASE_FIRST_ENTER)
         });
 
         DecisionNode start_n = new DecisionNode("investigate nursery", (state) =>
@@ -43,7 +65,7 @@ public class DecisionTree
             }
             return false;
         }, new InputMapping[] {
-               new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.NURSERYFIRSTENTER)
+               new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.NURSERY_FIRST_ENTER)
         });
 
         // start node
@@ -57,6 +79,11 @@ public class DecisionTree
         start.AddBranch("start to nursery", start_n);
         start.AddBranch("start to main stair case", start_msc);
 
+        // start wander stair case branches.
+        start_msc.AddBranch("main stair case to check entrance door", msc_ted);
+
+        // entrance door branches.
+        msc_ted.AddBranch("try opening the entrance door", msc_toed);
 
         currentDecision = start;
     }
@@ -91,7 +118,6 @@ public class DecisionTree
               UpdateCurrentDecision(choice);
               break;
            }
-            //Console.WriteLine("choice: {0}: {1} ", choices[i], isMatch);
         }
     }
 
@@ -133,23 +159,6 @@ public class DecisionTree
 
         public void ExecutePlan(Game game)
         {
-            //if (plan.Length <= currentPlanIndex) return;
-
-            //InputMapping currentPlan =  plan[currentPlanIndex];
-
-            //switch (currentPlan.State)
-            //{
-            //    case Input.InputState.MONOLOGUES:
-            //        game.input.SetState(Input.InputState.MONOLOGUES);
-            //        game.display.DisplayText(Game.GetMonologue((Game.MonologueKeys) currentPlan.Key));
-            //        break;
-            //    case Input.InputState.CHOOSING:
-            //        game.input.SetState(Input.InputState.CHOOSING);
-            //        game.SetCurrentChoices((Game.ChoicesKeys) currentPlan.Key);
-            //        break;
-            //    default:
-            //        throw new Exception("Given State Is Invalid!");
-            //}
             for (int i = plan.Length - 1; i >= 0; i--) {
                 game.action.AddToStack(plan[i]);
             }
