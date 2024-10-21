@@ -52,7 +52,7 @@ public class Input
                 {
                     if (!game.display.IsDisplaying())
                     {
-                        game.decisionTree.ExecuteDecisionPlan();
+                        game.action.ExecutePlan();
                         if (inputState == InputState.CHOOSING)
                         {
                             TriggerChoicesDisplay();
@@ -79,7 +79,7 @@ public class Input
                         //Dictionary<string, object> state = Game.GetState();
                         //decisionTree.Update(state);
 
-                        game.decisionTree.ExecuteDecisionPlan();
+                        game.action.ExecutePlan();
 
                         break;
                     case ConsoleKey.UpArrow:

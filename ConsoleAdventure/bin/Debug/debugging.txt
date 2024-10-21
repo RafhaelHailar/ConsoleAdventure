@@ -6,7 +6,7 @@ START: start center check
 END: start center check
 
  Location Stack:
-Second Floor Hallway,Main Staircase,Second Floor Hallway,Main Staircase,Second Floor Hallway,Main Staircase,Second Floor Hallway
+Second Floor Hallway,Main Staircase,Second Floor Hallway,Main Staircase,Second Floor Hallway,Main Staircase,Second Floor Hallway,Main Staircase
 
 Input State:
 CHOOSING

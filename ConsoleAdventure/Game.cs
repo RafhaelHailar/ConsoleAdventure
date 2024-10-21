@@ -116,7 +116,7 @@ public class Game
         this.display = new Display(this);
         this.decisionTree = new DecisionTree(this);
         this.input = new Input(this);
-        this.action = new Action();
+        this.action = new Action(this);
 
         // build map
         locationMap.Add(Location.SECOND_FLOOR_HALLWAY, "Second Floor Hallway");
@@ -148,6 +148,7 @@ public class Game
 
         // initialize game
         decisionTree.ExecuteDecisionPlan();
+        action.ExecutePlan();
         input.AskForInput();
     }
 

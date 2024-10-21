@@ -60,7 +60,6 @@ public class DecisionTree
     public void ExecuteDecisionPlan()
     {
         currentDecision.ExecutePlan(game);
-        currentDecision.NextPlan();
     }
 
     public void Update(Dictionary<string, object> state)
@@ -118,33 +117,31 @@ public class DecisionTree
 
         public void ExecutePlan(Game game)
         {
-            if (plan.Length <= currentPlanIndex) return;
+            //if (plan.Length <= currentPlanIndex) return;
 
-            InputMapping currentPlan =  plan[currentPlanIndex];
+            //InputMapping currentPlan =  plan[currentPlanIndex];
 
-            switch (currentPlan.State)
-            {
-                case Input.InputState.MONOLOGUES:
-                    game.input.SetState(Input.InputState.MONOLOGUES);
-                    game.display.DisplayText(Game.GetMonologue((Game.MonologueKeys) currentPlan.Key));
-                    break;
-                case Input.InputState.CHOOSING:
-                    game.input.SetState(Input.InputState.CHOOSING);
-                    game.SetCurrentChoices((Game.ChoicesKeys) currentPlan.Key);
-                    break;
-                default:
-                    throw new Exception("Given State Is Invalid!");
+            //switch (currentPlan.State)
+            //{
+            //    case Input.InputState.MONOLOGUES:
+            //        game.input.SetState(Input.InputState.MONOLOGUES);
+            //        game.display.DisplayText(Game.GetMonologue((Game.MonologueKeys) currentPlan.Key));
+            //        break;
+            //    case Input.InputState.CHOOSING:
+            //        game.input.SetState(Input.InputState.CHOOSING);
+            //        game.SetCurrentChoices((Game.ChoicesKeys) currentPlan.Key);
+            //        break;
+            //    default:
+            //        throw new Exception("Given State Is Invalid!");
+            //}
+            for (int i = plan.Length - 1; i >= 0; i--) {
+                game.action.AddToStack(plan[i]);
             }
         }
 
         public Input.InputState GetCurrentPlanInputState()
         {
             return plan[currentPlanIndex].State;
-        }
-
-        public void NextPlan()
-        {
-            currentPlanIndex++;
         }
     }
 }

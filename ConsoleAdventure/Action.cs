@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 /**
  * 
@@ -11,7 +12,12 @@ public class Action
     // plan execution stack
     private Stack<InputMapping> planExecutionStack = new Stack<InputMapping>();
 
-    public Action(){}
+    // component
+    protected readonly Game game;
+
+    public Action(Game game){
+        this.game = game;
+    }
 
     // add to stack
     public void AddToStack(InputMapping input)
@@ -22,7 +28,21 @@ public class Action
     // execute plan 
     public void ExecutePlan()
     {
-        InputMapping input = planExecutionStack.Pop();
+        if (planExecutionStack.Count == 0) return;
+        InputMapping currentPlan = planExecutionStack.Pop();
 
+        switch (currentPlan.State)
+        {
+            case Input.InputState.MONOLOGUES:
+                game.input.SetState(Input.InputState.MONOLOGUES);
+                game.display.DisplayText(Game.GetMonologue((Game.MonologueKeys)currentPlan.Key));
+                break;
+            case Input.InputState.CHOOSING:
+                game.input.SetState(Input.InputState.CHOOSING);
+                game.SetCurrentChoices((Game.ChoicesKeys)currentPlan.Key);
+                break;
+            default:
+                throw new Exception("Given State Is Invalid!");
+        }
     }
 }
