@@ -5,6 +5,7 @@ using System.IO;
 using ConsoleAdventureUtils;
 using System.Security.Policy;
 using System.Xml.Linq;
+using System.Linq;
 
 /*
  *  Game Class connnect the different components for the game.
@@ -100,11 +101,7 @@ public class Game
     {
         {
            ChoicesKeys.CHANGEPLACE,
-           new string[]{}
-        },
-        {
-           ChoicesKeys.NAME,
-           new string[] { "Manuel", "Pedro", "Kawowski" }
+           new string[] {}
         }
     };
 
@@ -114,9 +111,9 @@ public class Game
     // game state
     protected Location currentLocation = Location.SECOND_FLOOR_HALLWAY;
     protected ArrayList locationStack = new ArrayList();
-    protected Location[] unlockedLocation;
+    public Location[] unlockedLocation;
     
-    protected Location[] triedLocation; // for displaying whether location is locked or unlocked after player tried it.
+    public Location[] triedLocation; // for displaying whether location is locked or unlocked after player tried it.
 
     // components initialization
     public readonly Action action;
@@ -152,13 +149,12 @@ public class Game
 
         for (int i = 0; i < totalLocation; i++) {
             unlockedLocation[i] = Location.LOCKED;
-            triedLocation[i] = Location.TRIED;
         }
 
         UnlockLocation(currentLocation);
         UnlockLocation(Location.NURSERY);
         UnlockLocation(Location.MAIN_STAIRCASE);
-
+    
         // initialize game
         decisionTree.ExecuteDecisionPlan();
         action.ExecutePlan();
@@ -214,12 +210,12 @@ public class Game
         int locationIndex = (int)location;
 
         // for logging of the location tried by the player.
-        if (triedLocation[locationIndex] != Location.TRIED)
+        if (!triedLocation[locationIndex].Equals(Location.TRIED))
         {
             TryLocation(location);
         } 
 
-        if (unlockedLocation[locationIndex] == Location.LOCKED)
+        if (unlockedLocation[locationIndex].Equals(Location.LOCKED))
         {
             action.AddToStack(new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.LOCATIONLOCKED));
             return;
@@ -244,7 +240,10 @@ public class Game
         switch (currentChoices)
         {
             case ChoicesKeys.CHANGEPLACE:
-                return GetDirections(currentLocation);
+                {
+                    return GetDirections(currentLocation);
+                }
+
         }
         return Choices[currentChoices];
     }
@@ -266,24 +265,10 @@ public class Game
         currentChoices = choicesKeys;
     }
 
-    public void MakeChoice(string choice)
+    public void MakeChoice(int chooseLevel)
     {
-        if (choice == null) throw new ArgumentNullException();
-
         string[] choices = GetCurrentChoices();
-
-        bool exists = false;
-
-        for (int i = 0; i < choices.Length; i++)
-        {
-            if (choices[i].Equals(choice))
-            {
-                exists = true;
-            }
-
-        }
-
-        if (!exists) throw new Exception("choice given is not part of choices!");
+        string choice = choices[chooseLevel];
 
         switch (currentChoices)
         {
@@ -322,6 +307,8 @@ public class Game
         debuggingText += "\nEND: " + decisionTree.GetCurrentDecision();
         string debugLocationStackString = "\n\n Location Stack:\n" + String.Join(",", locationStack.ToArray(typeof(string)) as string[]);
         debuggingText += debugLocationStackString;
+        string debugTriedLocationStackString = "\n\n Tried Location Stack:\n" + String.Join(",", triedLocation);
+        debuggingText += debugTriedLocationStackString;
         debuggingText += "\n\nInput State:\n" + input.GetState();
 
         File.WriteAllText("debugging.txt", debuggingText);

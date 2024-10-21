@@ -73,8 +73,8 @@ public class Input
                     case ConsoleKey.Enter:
                     case ConsoleKey.Spacebar:
                         //Console.WriteLine("You are at {0} goto: (press \\Enter or \\Space to choose) \n", Game.GetCurrentLocation());
-                        string[] choose = game.GetCurrentChoices();
-                        game.MakeChoice(choose[chooseLevel]);
+                        //string[] choose = game.GetCurrentChoices();
+                        game.MakeChoice(chooseLevel);
                         chooseLevel = 0;
 
                         //Dictionary<string, object> state = game.GetState();
@@ -112,7 +112,7 @@ public class Input
 
     private void TriggerChoicesDisplay()
     {
-        game.display.DisplayChoices(game.GetCurrentChoicesText(), game.GetCurrentChoices(), chooseLevel);
+        game.display.DisplayChoices(chooseLevel);
     }
 
     public void SetState(InputState state)

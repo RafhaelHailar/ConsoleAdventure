@@ -1,6 +1,9 @@
 ﻿
 using System;
+using System.ComponentModel;
+using System.Linq;
 using System.Timers;
+using static Game;
 
 /**
  * Dispaly Class, as its name implies display what player sees in the terminal.
@@ -90,16 +93,32 @@ public class Display
         ResetDisplayText();
     }
 
-    public void DisplayChoices(string chooseText, string[] choose, int chooseLevel)
+    public void DisplayChoices(int chooseLevel)
     {
+        Game.ChoicesKeys choices = game.GetCurrentChoice();
+        string chooseText = game.GetCurrentChoicesText();
+        string[] choose = game.GetCurrentChoices();
         Console.WriteLine("You are at {0} \n", Game.locationMap[game.GetCurrentLocation()]);
         Console.Write(chooseText);
         Console.Write("(Press \\Enter or \\Space to choose)\n");
         for (int i = 0; i < choose.Length; i++)
         {
-            string line = choose[i];
+            string current = choose[i];
             char value = chooseLevel == i ? '*' : ' ';
-            Console.WriteLine("[{0}] {1}", value, line);
+            string choiceIndexText = "[" + value + "]";
+            string choiceValueText = current;
+
+            if (choices.Equals(Game.ChoicesKeys.CHANGEPLACE))
+            {
+                Location direction = locationMap[current];
+                if (game.triedLocation.Contains(direction))
+                {
+                    string lockDisplay = game.unlockedLocation.Contains(direction) ? "Unlocked" : "Locked";
+                    choiceValueText = "[" + lockDisplay + "] " +
+                        "" + choiceValueText;
+                }
+            }
+            Console.WriteLine(choiceIndexText + " " + choiceValueText);
         }
     }
 }
