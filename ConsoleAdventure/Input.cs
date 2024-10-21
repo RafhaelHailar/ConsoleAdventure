@@ -120,7 +120,7 @@ public class Input
     }
 
 
-    public InputState getState()
+    public InputState GetState()
     {
         return inputState;
     }

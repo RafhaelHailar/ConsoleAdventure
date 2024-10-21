@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using static System.Collections.Specialized.BitVector32;
 
 /**
  * 
@@ -28,7 +29,10 @@ public class Action
     // execute plan 
     public void ExecutePlan()
     {
-        if (planExecutionStack.Count == 0) return;
+        if (planExecutionStack.Count == 0)
+        {
+            AddToStack(new InputMapping(Input.InputState.CHOOSING, Game.ChoicesKeys.CHANGEPLACE));
+        };
         InputMapping currentPlan = planExecutionStack.Pop();
 
         switch (currentPlan.State)

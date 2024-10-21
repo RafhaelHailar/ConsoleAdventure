@@ -51,7 +51,8 @@ public class Game
     public enum MonologueKeys
     {
         INTRO,
-        INTHECENTER
+        INTHECENTER,
+        LOCATIONLOCKED
     }
 
     private static readonly Dictionary<MonologueKeys, string> MonologueTexts = new Dictionary<MonologueKeys, string>
@@ -61,6 +62,9 @@ public class Game
         },
         {
             MonologueKeys.INTHECENTER,"You are now in the center of the mansion!"
+        },
+        {
+            MonologueKeys.LOCATIONLOCKED,"The Door is Locked!"
         },
     };
 
@@ -208,7 +212,7 @@ public class Game
 
         if (unlockedLocation[locationIndex] == Location.LOCKED)
         {
-            display.DisplayText("BallZuck");
+            action.AddToStack(new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.LOCATIONLOCKED));
             return;
         }
         currentLocation = location;
@@ -235,6 +239,14 @@ public class Game
         }
         return Choices[currentChoices];
     }
+
+
+    // Choices Methods
+    public ChoicesKeys GetCurrentChoice()
+    {
+        return currentChoices;
+    }
+
     public string GetCurrentChoicesText()
     {
         return ChoicesText[currentChoices]; 
@@ -301,7 +313,7 @@ public class Game
         debuggingText += "\nEND: " + decisionTree.GetCurrentDecision();
         string debugLocationStackString = "\n\n Location Stack:\n" + String.Join(",", locationStack.ToArray(typeof(string)) as string[]);
         debuggingText += debugLocationStackString;
-        debuggingText += "\n\nInput State:\n" + input.getState();
+        debuggingText += "\n\nInput State:\n" + input.GetState();
 
         File.WriteAllText("debugging.txt", debuggingText);
     }
