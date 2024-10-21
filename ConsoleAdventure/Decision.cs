@@ -84,19 +84,13 @@ public class DecisionTree
       
         for (int i = 0;i < choices.Length; i++)
         {
-            try
-            {
-                DecisionNode choice = currentDecision.GetChoice(choices[i]);
-                bool isMatch = choice.Prerequisite(state);
-                if (isMatch)
-                {
-                    UpdateCurrentDecision(choice);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("ERROR");
-            }
+           DecisionNode choice = currentDecision.GetChoice(choices[i]);
+           bool isMatch = choice.Prerequisite(state);
+           if (isMatch)
+           {
+              UpdateCurrentDecision(choice);
+              break;
+           }
             //Console.WriteLine("choice: {0}: {1} ", choices[i], isMatch);
         }
     }

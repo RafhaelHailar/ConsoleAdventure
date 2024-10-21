@@ -6,10 +6,10 @@ START: investigate nursery
 END: investigate nursery
 
  Location Stack:
-Second Floor Hallway,Nursery,Second Floor Hallway,Main Staircase,Second Floor Hallway,Nursery,Second Floor Hallway,Main Staircase,Second Floor Hallway
+Second Floor Hallway,Nursery,Second Floor Hallway
 
  Tried Location Stack:
-LOCKED,LOCKED,SECOND_FLOOR_HALLWAY,MAIN_STAIRCASE,MASTER_BEDROOM,NURSERY,ART_STUDIO,GUEST_BEDROOM,GALLERY_OVERLOOK,GAME_ROOM
+LOCKED,LOCKED,SECOND_FLOOR_HALLWAY,LOCKED,MASTER_BEDROOM,NURSERY,LOCKED,LOCKED,LOCKED,LOCKED
 
 Input State:
 CHOOSING
