@@ -47,6 +47,7 @@ public class Display
         counter++;
         if (pointer == currentText.Length)
         {
+            Console.WriteLine("\n\n[Press Enter or Space to Continue]");
             StopTimer();
             ResetDisplayText();
             return;
@@ -89,6 +90,7 @@ public class Display
 
         StopTimer();
         Console.WriteLine(currentText);
+        Console.WriteLine("\n\n[Press Enter or Space to Continue]");
         ResetDisplayText();
     }
 

@@ -2,14 +2,14 @@
 
 
 DECISION:
-START: start
-END: start
+START: grand foyer check entrance door
+END: grand foyer check entrance door
 
  Location Stack:
-Second Floor Hallway
+Second Floor Hallway,Main Staircase,The Grand Foyer,Mansion Entrance Door,The Grand Foyer,Mansion Entrance Door,The Grand Foyer
 
  Tried Location Stack:
-LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED
+LOCKED,LOCKED,LOCKED,MAIN_STAIRCASE,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,GRAND_FROYER,LOCKED,LOCKED,LOCKED,ENTRANCE
 
 Input State:
-MONOLOGUES
+CHOOSING

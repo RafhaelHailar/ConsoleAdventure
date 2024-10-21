@@ -60,7 +60,7 @@ public class Input
                     } else
                     {
                        game.display.EndDisplayText();
-                       Console.WriteLine("\n\n[Press Enter or Space to Continue]");
+                       //Console.WriteLine("\n\n[Press Enter or Space to Continue]");
                     }
                 } else if (!game.display.IsDisplaying())
                 {
