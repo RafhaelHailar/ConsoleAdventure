@@ -2,14 +2,14 @@
 
 
 DECISION:
-START: try opening entrance door
-END: try opening entrance door
+START: start
+END: start
 
  Location Stack:
-Second Floor Hallway,Main Staircase,The Grand Foyer,Mansion Entrance Door,The Grand Foyer,Main Staircase,Second Floor Hallway
+Second Floor Hallway
 
  Tried Location Stack:
-LOCKED,LOCKED,SECOND_FLOOR_HALLWAY,MAIN_STAIRCASE,MASTER_BEDROOM,LOCKED,LOCKED,GUEST_BEDROOM,GALLERY_OVERLOOK,GAME_ROOM,GRAND_FROYER,DRAWING_ROOM,DINING_HALL,GALLERY,ENTRANCE
+LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED,LOCKED
 
 Input State:
-CHOOSING
+MONOLOGUES
