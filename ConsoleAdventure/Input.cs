@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections;
 
+/**
+ * InputMapping Class, map the action with the value it will be perform along.
+ * 
+ */
 public struct InputMapping
 {
     public Input.InputState State { get; }
@@ -14,6 +16,10 @@ public struct InputMapping
     }
 }
 
+/**
+ * Input Class, take player keyboard inputs and perform the action the input does.
+ *  - move choices if player is choosing.
+ */
 public class Input
 {
     // input state
@@ -24,9 +30,6 @@ public class Input
     }
 
     private InputState inputState = InputState.MONOLOGUES;
-
-    // monologue is displaying
-    bool isMonologueDisplaying = true;
 
     // component
     readonly Game game;
@@ -47,23 +50,21 @@ public class Input
             case InputState.MONOLOGUES:
                 if (name.Key == ConsoleKey.Enter || name.Key == ConsoleKey.Spacebar)
                 {
-                    if (!isMonologueDisplaying)
+                    if (!game.display.IsDisplaying())
                     {
-                        game.decisionTree.ExecuteDecisionPlan();
+                        game.action.ExecutePlan();
                         if (inputState == InputState.CHOOSING)
                         {
-                            game.display.DisplayChoices(game.GetCurrentChoices(), chooseLevel);
+                            TriggerChoicesDisplay();
                         }
-                        isMonologueDisplaying = true;
                     } else
                     {
-                        isMonologueDisplaying = false;
-                        game.display.EndDisplayText();
+                       game.display.EndDisplayText();
+                       Console.WriteLine("\n\n[Press Enter or Space to Continue]");
                     }
                 } else if (!game.display.IsDisplaying())
                 {
                     game.display.ReDisplayText();
-                    isMonologueDisplaying = false;
                 }
                 break;
             case InputState.CHOOSING:
@@ -72,14 +73,14 @@ public class Input
                     case ConsoleKey.Enter:
                     case ConsoleKey.Spacebar:
                         //Console.WriteLine("You are at {0} goto: (press \\Enter or \\Space to choose) \n", Game.GetCurrentLocation());
-                        string[] choose = game.GetCurrentChoices();
-                        game.MakeChoice(choose[chooseLevel]);
+                        //string[] choose = game.GetCurrentChoices();
+                        game.MakeChoice(chooseLevel);
                         chooseLevel = 0;
 
-                        //Dictionary<string, object> state = Game.GetState();
-                        //decisionTree.Update(state);
+                        //Dictionary<string, object> state = game.GetState();
+                        //game.decisionTree.Update(state);
 
-                        game.decisionTree.ExecuteDecisionPlan();
+                        game.action.ExecutePlan();
 
                         break;
                     case ConsoleKey.UpArrow:
@@ -90,7 +91,7 @@ public class Input
                         break;  
                 }
 
-                game.display.DisplayChoices(game.GetCurrentChoices(), chooseLevel);
+                TriggerChoicesDisplay();
                 break;
         }
         // For Debugging;
@@ -109,12 +110,18 @@ public class Input
         chooseLevel = newChooseLevel;
     }
 
+    private void TriggerChoicesDisplay()
+    {
+        game.display.DisplayChoices(chooseLevel);
+    }
+
     public void SetState(InputState state)
     {
         inputState = state;
     }
 
-    public InputState getState()
+
+    public InputState GetState()
     {
         return inputState;
     }

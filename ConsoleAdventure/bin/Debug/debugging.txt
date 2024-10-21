@@ -2,11 +2,14 @@
 
 
 DECISION:
-START: test path 3
-END: test path 3
+START: investigate nursery
+END: investigate nursery
 
  Location Stack:
-center,wine room,center,spacious living room,study room
+Second Floor Hallway,Nursery,Second Floor Hallway,Main Staircase,Second Floor Hallway,Nursery,Second Floor Hallway,Main Staircase,Second Floor Hallway
+
+ Tried Location Stack:
+LOCKED,LOCKED,SECOND_FLOOR_HALLWAY,MAIN_STAIRCASE,MASTER_BEDROOM,NURSERY,ART_STUDIO,GUEST_BEDROOM,GALLERY_OVERLOOK,GAME_ROOM
 
 Input State:
 CHOOSING

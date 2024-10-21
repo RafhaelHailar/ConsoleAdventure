@@ -1,9 +1,15 @@
 ﻿
 using System;
-using System.Collections.Generic;
-using System.Reflection;
+using System.ComponentModel;
+using System.Linq;
 using System.Timers;
+using static Game;
 
+/**
+ * Dispaly Class, as its name implies display what player sees in the terminal.
+ * - text animation
+ * - choices ui
+ */
 public class Display
 {
     private static Timer aTimer = new Timer();
@@ -12,9 +18,12 @@ public class Display
     private string currentText = "";
     private string previousText = null;
 
-    public Display()
-    {
+    // component
+    Game game;
 
+    public Display(Game game)
+    {
+        this.game = game;
     }
 
     public void DisplayText(string text)
@@ -25,6 +34,7 @@ public class Display
         previousText = currentText;
         AnimateText();
     }
+
 
     private void AnimateText()
     {
@@ -83,16 +93,32 @@ public class Display
         ResetDisplayText();
     }
 
-    public void DisplayChoices(string[] choose, int chooseLevel)
+    public void DisplayChoices(int chooseLevel)
     {
-        Console.WriteLine("You are at {0} \n", Game.GetCurrentLocation());
-        Console.WriteLine("Press \\Enter or \\Space to choose");
-        Console.WriteLine("Goto: ");
+        Game.ChoicesKeys choices = game.GetCurrentChoice();
+        string chooseText = game.GetCurrentChoicesText();
+        string[] choose = game.GetCurrentChoices();
+        Console.WriteLine("You are at {0} \n", Game.locationMap[game.GetCurrentLocation()]);
+        Console.Write(chooseText);
+        Console.Write("(Press \\Enter or \\Space to choose)\n");
         for (int i = 0; i < choose.Length; i++)
         {
-            string line = choose[i];
+            string current = choose[i];
             char value = chooseLevel == i ? '*' : ' ';
-            Console.WriteLine("[{0}] {1}", value, line);
+            string choiceIndexText = "[" + value + "]";
+            string choiceValueText = current;
+
+            if (choices.Equals(Game.ChoicesKeys.CHANGEPLACE))
+            {
+                Location direction = locationMap[current];
+                if (game.triedLocation.Contains(direction))
+                {
+                    string lockDisplay = game.unlockedLocation.Contains(direction) ? "Unlocked" : "Locked";
+                    choiceValueText = "[" + lockDisplay + "] " +
+                        "" + choiceValueText;
+                }
+            }
+            Console.WriteLine(choiceIndexText + " " + choiceValueText);
         }
     }
 }
