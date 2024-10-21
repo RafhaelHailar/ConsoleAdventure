@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
 using System;
+using System.IO;
+using System.Linq;
 
 /**
  * DecisionTree, creates the story feature. 
@@ -19,28 +21,41 @@ public class DecisionTree
 
 
         // start path nodes.
-        DecisionNode start_cc = new DecisionNode("start center check", (state) =>
+        DecisionNode start_msc = new DecisionNode("wander on the main stair case", (state) =>
         {
-            Game.Location currentLocation = (Game.Location) state["currentLocation"];
+            Game.Location currentLocation = (Game.Location)state["currentLocation"];
             if (currentLocation.Equals(Game.Location.MAIN_STAIRCASE))
             {
                 return true;
             }
             return false;
+        }, new InputMapping[]
+        {
+            new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.INTHECENTER)
+        });
+
+        DecisionNode start_n = new DecisionNode("investigate nursery", (state) =>
+        {
+            Game.Location currentLocation = (Game.Location)state["currentLocation"];
+            if (currentLocation.Equals(Game.Location.NURSERY))
+            {
+                return true;
+            }
+            return false;
         }, new InputMapping[] {
-               new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.INTHECENTER),
-               new InputMapping(Input.InputState.CHOOSING, Game.ChoicesKeys.CHANGEPLACE)
+               new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.NURSERYFIRSTENTER)
         });
 
         // start node
         DecisionNode start = new DecisionNode("start", null, new InputMapping[] {
                new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.INTRO),
-               new InputMapping(Input.InputState.CHOOSING, Game.ChoicesKeys.CHANGEPLACE)
+               new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.CRYING)
         });
 
 
         // start path branches
-        start.AddBranch("go to family history room", start_cc);
+        start.AddBranch("start to nursery", start_n);
+        start.AddBranch("start to main stair case", start_msc);
 
 
         currentDecision = start;
@@ -55,6 +70,7 @@ public class DecisionTree
     {
         currentDecision = decision;
         ExecuteDecisionPlan();
+        game.action.ExecutePlan();
     }
 
     public void ExecuteDecisionPlan()
@@ -65,13 +81,21 @@ public class DecisionTree
     public void Update(Dictionary<string, object> state)
     {
         string[] choices = currentDecision.GetChoices();
+      
         for (int i = 0;i < choices.Length; i++)
         {
-            DecisionNode choice = currentDecision.GetChoice(choices[i]);
-            bool isMatch = choice.Prerequisite(state);
-            if (isMatch)
+            try
             {
-                UpdateCurrentDecision(choice);
+                DecisionNode choice = currentDecision.GetChoice(choices[i]);
+                bool isMatch = choice.Prerequisite(state);
+                if (isMatch)
+                {
+                    UpdateCurrentDecision(choice);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR");
             }
             //Console.WriteLine("choice: {0}: {1} ", choices[i], isMatch);
         }
@@ -81,7 +105,6 @@ public class DecisionTree
     {
         private readonly string name;
         private readonly Dictionary<string, DecisionNode> branches = new Dictionary<string, DecisionNode>();
-        private readonly ArrayList choices = new ArrayList();
         private readonly InputMapping[] plan;
         private int currentPlanIndex = 0;
         public Func<Dictionary<string, object>, bool> Prerequisite { get; set; }
@@ -97,12 +120,11 @@ public class DecisionTree
         public void AddBranch(string name,DecisionNode node)
         {
             branches.Add(name, node);
-            choices.Add(name);
         }
 
         public string[] GetChoices()
         {
-            return (string[]) choices.ToArray(typeof(string));
+            return branches.Keys.ToArray();
         }
 
         public DecisionNode GetChoice(string name)

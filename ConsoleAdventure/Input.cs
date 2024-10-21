@@ -60,6 +60,7 @@ public class Input
                     } else
                     {
                        game.display.EndDisplayText();
+                       Console.WriteLine("\n\n[Press Enter or Space to Continue]");
                     }
                 } else if (!game.display.IsDisplaying())
                 {
@@ -76,8 +77,8 @@ public class Input
                         game.MakeChoice(choose[chooseLevel]);
                         chooseLevel = 0;
 
-                        //Dictionary<string, object> state = Game.GetState();
-                        //decisionTree.Update(state);
+                        //Dictionary<string, object> state = game.GetState();
+                        //game.decisionTree.Update(state);
 
                         game.action.ExecutePlan();
 

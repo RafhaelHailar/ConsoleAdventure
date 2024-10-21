@@ -32,6 +32,7 @@ public class Display
         AnimateText();
     }
 
+
     private void AnimateText()
     {
         aTimer = new Timer(70);

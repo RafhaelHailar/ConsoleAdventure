@@ -4,6 +4,7 @@ using System.Collections;
 using System.IO;
 using ConsoleAdventureUtils;
 using System.Security.Policy;
+using System.Xml.Linq;
 
 /*
  *  Game Class connnect the different components for the game.
@@ -52,13 +53,15 @@ public class Game
     {
         INTRO,
         INTHECENTER,
-        LOCATIONLOCKED
+        LOCATIONLOCKED,
+        CRYING,
+        NURSERYFIRSTENTER
     }
 
     private static readonly Dictionary<MonologueKeys, string> MonologueTexts = new Dictionary<MonologueKeys, string>
     {
         {
-            MonologueKeys.INTRO,"You awaken in a vast, dimly lit mansion, its towering ceilings and ornate decor both magnificent and foreboding. Shadows stretch across the walls, whispering secrets you can’t quite grasp. The air is thick with an unsettling silence, broken only by the distant creak of old wood beneath your feet.\r\n\r\nYou search for clues about your identity, but your mind is a blank canvas, void of memories. As you take a cautious step forward, a chill runs down your spine. What lies within these walls? Are the eerie sounds mere echoes of your imagination, or do they hint at something lurking just beyond your sight? Your journey begins now—face your fears and uncover the truth hidden in the depths of this mansion. Will you discover who you are, or will the shadows consume you?\r\n\r\n\r\n\r\n"
+            MonologueKeys.INTRO,"You awaken in a vast, dimly lit mansion, its towering ceilings and ornate decor both magnificent and foreboding. Shadows stretch across the walls, whispering secrets you can’t quite grasp. The air is thick with an unsettling silence, broken only by the distant creak of old wood beneath your feet.\r\n\r\nYou search for clues about your identity, but your mind is a blank canvas, void of memories. As you take a cautious step forward, a chill runs down your spine. What lies within these walls? Are the eerie sounds mere echoes of your imagination, or do they hint at something lurking just beyond your sight? Your journey begins now—face your fears and uncover the truth hidden in the depths of this mansion. Will you discover who you are, or will the shadows consume you?"
         },
         {
             MonologueKeys.INTHECENTER,"You are now in the center of the mansion!"
@@ -66,6 +69,12 @@ public class Game
         {
             MonologueKeys.LOCATIONLOCKED,"The Door is Locked!"
         },
+        {
+            MonologueKeys.CRYING,"A faint, chilling wail echoes through the hall—a child's cry, drifting from the direction of the Nursery. Your heart quickens. Could it be a lost soul, or something far more sinister?"
+        },
+        {
+            MonologueKeys.NURSERYFIRSTENTER,"As you approach the Nursery, a sense of dread washes over you, tightening like a vice around your chest. The air grows colder, and each breath forms a misty cloud that lingers in the dim light. The room is filled with baby dolls—each one missing an eye, yet they seem to watch your every move with their remaining, lifeless gaze. A shiver runs through you as the icy air presses against your skin, as if unseen hands are drawing closer. You can't shake the feeling that something unspeakably sinister is waiting in the shadows, just beyond your sight."
+        }
     };
 
     // Choices
