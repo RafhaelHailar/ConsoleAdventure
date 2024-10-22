@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Collections;
 using System.IO;
 using ConsoleAdventureUtils;
-using System.Runtime;
-
+using System.Data.Common;
+using System.Linq;
 /*
  *  Game Class connnect the different components for the game.
  *  - holds the location data and its creation.
@@ -139,7 +139,8 @@ public class Game
     protected Location currentLocation = Location.SECOND_FLOOR_HALLWAY;
     protected ArrayList locationStack = new ArrayList();
     public Location[] unlockedLocation;
-    bool triedOpeningEntranceDoor = false;
+    // -1 = null, 0 = false, 1 = true
+    int triedOpeningEntranceDoor = -1;
     
     public Location[] triedLocation; // for displaying whether location is locked or unlocked after player tried it.
 
@@ -151,10 +152,12 @@ public class Game
 
     public Game() {
         // components
-        this.display = new Display(this);
-        this.decisionTree = new DecisionTree(this);
         this.input = new Input(this);
+        this.display = new Display(this);
+        // action neeeded the input and display to be initialize to execute an action.
         this.action = new Action(this);
+        // decision tree needed action to be initialize first, because at the start we execute an action.
+        this.decisionTree = new DecisionTree(this);
 
         // build map
         locationMap.Add(Location.SECOND_FLOOR_HALLWAY, "Second Floor Hallway");
@@ -171,7 +174,7 @@ public class Game
         locationMap.Add(Location.GALLERY, "Gallery");
         locationMap.Add(Location.ENTRANCE, "Mansion Entrance Door");
 
-        CreateLocation(); // initialize creation.
+        CreateLocation(); // initialize map creation.
 
         locationStack.Add(locationMap[currentLocation]);
 
@@ -191,8 +194,6 @@ public class Game
         UnlockLocation(Location.ENTRANCE);
 
         // initialize game
-        decisionTree.ExecuteDecisionPlan();
-        action.ExecutePlan();
         input.AskForInput();
     }
 
@@ -311,10 +312,7 @@ public class Game
                 SetCurrentLocation(locationMap[choice]);
                 break;
             case ChoicesKeys.OPEN_ENTRANCE_DOOR:
-                if (choice.Equals("Yes"))
-                {
-                    triedOpeningEntranceDoor = true;
-                }
+                triedOpeningEntranceDoor = choice.Equals("Yes") ? 1 : 0;
                 break;
         }
     }
@@ -335,7 +333,32 @@ public class Game
             { "triedOpeningEntranceDoor", triedOpeningEntranceDoor }
         };
     }
-    
+
+    // Single State Update
+    public void UpdateState(string key, object value)
+    {
+        switch (key)
+        {
+            case "triedOpeningEntranceDoor":
+                triedOpeningEntranceDoor = (int) value;
+                break;
+            case "currentLocation":
+                currentLocation = (Location) value;
+                break;
+        }
+    }
+
+    // Multiple State Update
+    public void UpdateState(Dictionary<string, object> state)
+    {
+        string[] stateKeys = state.Keys.ToArray();
+        for (int i = 0; i < stateKeys.Length; i++)
+        {
+            string currentState = stateKeys[i];
+            UpdateState(currentState, state[currentState]);
+        }
+    }
+
 
     // For Debugging
     public void RunDebugging()

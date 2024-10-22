@@ -48,4 +48,9 @@ public class Action
                 throw new Exception("Given State Is Invalid!");
         }
     }
+
+    public void ClearExecutionStack()
+    {
+        planExecutionStack.Clear();
+    }
 }

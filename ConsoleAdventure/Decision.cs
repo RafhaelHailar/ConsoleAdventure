@@ -1,6 +1,10 @@
 ﻿using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Collections;
+using SysAction = System.Action;
+using System.Data.Common;
+using System.Data;
 
 /**
  * DecisionTree, creates the story feature. 
@@ -9,7 +13,13 @@ using System.Linq;
  */
 public class DecisionTree
 {
+    // current decision
     private DecisionNode currentDecision;
+
+    // decision progression.
+    private Stack<DecisionNode> decisionProgression = new Stack<DecisionNode>();
+
+    // component
     readonly Game game;
 
     public DecisionTree(Game game)
@@ -20,11 +30,38 @@ public class DecisionTree
         // entrance door nodes.
         DecisionNode msc_toed = new DecisionNode("try opening entrance door", (state) =>
         {
-            bool triedOpeningEntranceDoor = (bool)state["triedOpeningEntranceDoor"];
-            return triedOpeningEntranceDoor;
+            int triedOpeningEntranceDoor = (int)state["triedOpeningEntranceDoor"];
+            if (triedOpeningEntranceDoor == 1)
+            {
+                return true;
+            }
+            return false;
         }, new InputMapping[]
         {
             new InputMapping(Input.InputState.MONOLOGUES, Game.MonologueKeys.ENTRANCE_DOOR_WAIL)
+        });
+
+        DecisionNode msc_dnoed = new DecisionNode("does not try opening entrance door", (state) =>
+        {
+            int triedOpeningEntranceDoor = (int)state["triedOpeningEntranceDoor"];
+            if (triedOpeningEntranceDoor == 0)
+            {
+                return true;
+            }
+            return false;
+        }, null, () =>
+        {
+            decisionProgression.Pop(); // remove this current node.
+            decisionProgression.Pop(); // remove this current node.
+            currentDecision = decisionProgression.Peek(); // replace by the parent node.
+            Dictionary<string, object> updatedState = new Dictionary<string, object>()
+            {
+                { "triedOpeningEntranceDoor", -1 },
+                { "currentLocation", Game.Location.GRAND_FROYER }
+            };
+            game.UpdateState(updatedState);
+            game.action.ClearExecutionStack();
+            game.input.TriggerChoicesDisplay();
         });
 
         // start wander stair case nodes.
@@ -84,8 +121,9 @@ public class DecisionTree
 
         // entrance door branches.
         msc_ted.AddBranch("try opening the entrance door", msc_toed);
+        msc_ted.AddBranch("did not try opening the entrance door", msc_dnoed);
 
-        currentDecision = start;
+        UpdateCurrentDecision(start);
     }
 
     public string GetCurrentDecision()
@@ -96,13 +134,14 @@ public class DecisionTree
     private void UpdateCurrentDecision(DecisionNode decision)
     {
         currentDecision = decision;
+        decisionProgression.Push(decision);
         ExecuteDecisionPlan();
         game.action.ExecutePlan();
     }
 
     public void ExecuteDecisionPlan()
     {
-        currentDecision.ExecutePlan(game);
+        currentDecision.Execute(game);
     }
 
     public void Update(Dictionary<string, object> state)
@@ -126,14 +165,18 @@ public class DecisionTree
         private readonly string name;
         private readonly Dictionary<string, DecisionNode> branches = new Dictionary<string, DecisionNode>();
         private readonly InputMapping[] plan;
-        private int currentPlanIndex = 0;
+
         public Func<Dictionary<string, object>, bool> Prerequisite { get; set; }
 
-        public DecisionNode(string name, Func<Dictionary<string, object>, bool> prerequisite = null, InputMapping[] plan = null)
+        // action that is outside of the decision plan.
+        public SysAction ExternalAction { get; set; }
+
+        public DecisionNode(string name, Func<Dictionary<string, object>, bool> prerequisite = null, InputMapping[] plan = null, SysAction externalAction = null)
         {
             this.name = name;
             this.Prerequisite = prerequisite ?? (state => false);
             this.plan = plan ?? new InputMapping[] { };
+            this.ExternalAction = externalAction ?? DefaultExternalAction;
         }
         
 
@@ -157,16 +200,16 @@ public class DecisionTree
             return this.name;
         }
 
-        public void ExecutePlan(Game game)
+        public void Execute(Game game)
         {
             for (int i = plan.Length - 1; i >= 0; i--) {
                 game.action.AddToStack(plan[i]);
             }
+
+            ExternalAction();
         }
 
-        public Input.InputState GetCurrentPlanInputState()
-        {
-            return plan[currentPlanIndex].State;
-        }
+        // default external action
+        public void DefaultExternalAction() { }
     }
 }

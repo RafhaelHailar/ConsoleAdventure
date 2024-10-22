@@ -60,7 +60,7 @@ public class Input
                     } else
                     {
                        game.display.EndDisplayText();
-                       Console.WriteLine("\n\n[Press Enter or Space to Continue]");
+                       //Console.WriteLine("\n\n[Press Enter or Space to Continue]");
                     }
                 } else if (!game.display.IsDisplaying())
                 {
@@ -110,7 +110,7 @@ public class Input
         chooseLevel = newChooseLevel;
     }
 
-    private void TriggerChoicesDisplay()
+    public void TriggerChoicesDisplay()
     {
         game.display.DisplayChoices(chooseLevel);
     }
