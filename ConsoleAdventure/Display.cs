@@ -99,6 +99,7 @@ public class Display
         Game.ChoicesKeys choices = game.GetCurrentChoice();
         string chooseText = game.GetCurrentChoicesText();
         string[] choose = game.GetCurrentChoices();
+        Console.Clear(); // for removing previous display.
         Console.WriteLine("You are at {0} \n", Game.locationMap[game.GetCurrentLocation()]);
         Console.Write(chooseText);
         Console.Write("(Press \\Enter or \\Space to choose)\n");

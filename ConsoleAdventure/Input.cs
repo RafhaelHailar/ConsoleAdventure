@@ -110,7 +110,7 @@ public class Input
         chooseLevel = newChooseLevel;
     }
 
-    private void TriggerChoicesDisplay()
+    public void TriggerChoicesDisplay()
     {
         game.display.DisplayChoices(chooseLevel);
     }
